@@ -28,6 +28,11 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
     setIsSyncing(false);
   };
 
+  const handleLogout = () => {
+    logout();
+    onNavigate('landing');
+  };
+
   return (
     <header className="bg-slate-900 text-white shadow-md sticky top-0 z-50">
       {/* Official Gov/MSDE Top Banner */}
@@ -161,7 +166,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                   </span>
                 </div>
                 <button
-                  onClick={logout}
+                  onClick={handleLogout}
                   className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
                   title="Logout"
                 >

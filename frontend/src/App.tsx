@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { OfflineSyncBanner } from './components/OfflineSyncBanner';
@@ -17,6 +17,14 @@ const AppContent: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
   const [currentView, setCurrentView] = useState<string>('landing');
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+
+  // Automatically redirect to homepage when logged out from a protected view
+  useEffect(() => {
+    if (!isAuthenticated && !['landing', 'login', 'register'].includes(currentView)) {
+      setCurrentView('landing');
+      setCurrentSessionId(null);
+    }
+  }, [isAuthenticated, currentView]);
 
   const handleNavigate = (view: string, id?: string) => {
     if (id) {
