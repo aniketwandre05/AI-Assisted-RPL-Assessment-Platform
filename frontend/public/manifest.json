@@ -1,0 +1,16 @@
+{
+  "name": "RPL SkillAssess - AI-Assisted Skill Assessment Tool",
+  "short_name": "RPL SkillAssess",
+  "description": "Offline-capable skill assessment and qualification matching for Recognition of Prior Learning (RPL)",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#4f46e5",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

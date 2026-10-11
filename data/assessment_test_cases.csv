@@ -1,0 +1,6 @@
+case_id,qualification_title,candidate_id,candidate_name,theory_score_pct,practical_score_pct,overall_score_pct,has_mandatory_evidence,has_unassessed_criteria,expected_provisional_rec,expected_final_decision,notes
+TC01,FULL-STACK DEVELOPER,W001,Rajesh Kumar,85.0,78.5,80.0,True,False,RECOMMENDED_CERTIFIED,CERTIFIED,Candidate exceeds 40% Theory and 60% Practical with mandatory practical video attached.
+TC02,FULL-STACK DEVELOPER,W002,Sunita Verma,75.0,52.0,58.0,True,False,NOT_YET_COMPETENT,NOT_YET_COMPETENT,Candidate satisfies Theory (75% >= 40%) but fails Practical (52% < 60% threshold).
+TC03,FULL-STACK DEVELOPER,W006,Manoj Das,90.0,82.0,84.5,False,False,INCOMPLETE_ASSESSMENT,DEFERRED,Candidate scores above thresholds but practical demonstration video evidence is missing.
+TC04,FULL-STACK DEVELOPER,W004,Vikram Singh,60.0,0.0,15.0,True,True,INCOMPLETE_ASSESSMENT,BLOCKED_FROM_FINALIZE,Assessor left practical criteria unassessed; system blocks premature certification.
+TC05,Solar PV & Domestic Electrician [DEMO / SYNTHETIC],W003,Amit Patel,100.0,100.0,100.0,True,False,RECOMMENDED_CERTIFIED,CERTIFIED,Candidate achieves full mastery (Level 4 on all tasks) with multimeter video clip.

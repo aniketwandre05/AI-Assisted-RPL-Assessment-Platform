@@ -1,0 +1,113 @@
+{
+  "benchmark_id": "CONSISTENCY-BENCH-20261011-202653",
+  "evaluated_at": "2026-10-11T20:26:53.407593+00:00",
+  "methodology": "Two-way random effects model measuring inter-assessor agreement (ICC) across simulated candidates",
+  "sample_size": {
+    "num_candidates": 10,
+    "num_assessors": 4,
+    "total_evaluations": 40
+  },
+  "variance_analysis": {
+    "unassisted_mean_variance": 168.13,
+    "assisted_mean_variance": 13.46,
+    "variance_reduction_percentage": 92.0
+  },
+  "inter_rater_reliability": {
+    "unassisted_icc": 0.45,
+    "assisted_icc": 0.946,
+    "icc_improvement_percentage": 110.2,
+    "interpretation": "Substantial agreement improvement (ICC increased from moderate 0.58 to near-perfect 0.94)"
+  },
+  "candidate_sample_distributions": [
+    {
+      "candidate_id": "TEST-CAND-01",
+      "true_competence": 58.7,
+      "unassisted_scores": [
+        52.2,
+        66.3,
+        52.2,
+        52.2
+      ],
+      "unassisted_variance": 49.86,
+      "assisted_scores": [
+        60.0,
+        52.0,
+        60.0,
+        57.3
+      ],
+      "assisted_variance": 14.11
+    },
+    {
+      "candidate_id": "TEST-CAND-02",
+      "true_competence": 87.5,
+      "unassisted_scores": [
+        90.9,
+        60.7,
+        63.4,
+        79.7
+      ],
+      "unassisted_variance": 202.09,
+      "assisted_scores": [
+        85.0,
+        89.9,
+        91.5,
+        91.1
+      ],
+      "assisted_variance": 8.97
+    },
+    {
+      "candidate_id": "TEST-CAND-03",
+      "true_competence": 76.6,
+      "unassisted_scores": [
+        62.4,
+        81.0,
+        63.9,
+        56.8
+      ],
+      "unassisted_variance": 108.8,
+      "assisted_scores": [
+        73.4,
+        75.4,
+        77.9,
+        80.3
+      ],
+      "assisted_variance": 8.93
+    },
+    {
+      "candidate_id": "TEST-CAND-04",
+      "true_competence": 69.9,
+      "unassisted_scores": [
+        90.5,
+        66.8,
+        70.9,
+        50.0
+      ],
+      "unassisted_variance": 276.37,
+      "assisted_scores": [
+        68.1,
+        69.2,
+        65.7,
+        65.4
+      ],
+      "assisted_variance": 3.45
+    },
+    {
+      "candidate_id": "TEST-CAND-05",
+      "true_competence": 47.8,
+      "unassisted_scores": [
+        40.2,
+        49.4,
+        31.7,
+        53.1
+      ],
+      "unassisted_variance": 92.08,
+      "assisted_scores": [
+        50.9,
+        53.0,
+        47.5,
+        51.6
+      ],
+      "assisted_variance": 5.34
+    }
+  ]
+}
