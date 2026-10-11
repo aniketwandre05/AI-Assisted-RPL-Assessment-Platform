@@ -181,6 +181,38 @@ export const QualificationMatchesPage: React.FC<QualificationMatchesProps> = ({ 
                   "{match.rationale.reason_summary}"
                 </p>
 
+                {/* NCVET Pre-Screening Candidate Eligibility Check */}
+                {match.eligibility && (
+                  <div className={`p-3 rounded-lg border text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${
+                    match.eligibility.eligibility_status === 'ELIGIBLE'
+                      ? 'bg-emerald-50/60 border-emerald-200 text-emerald-950'
+                      : match.eligibility.eligibility_status === 'PROVISIONALLY_ELIGIBLE'
+                      ? 'bg-blue-50/60 border-blue-200 text-blue-950'
+                      : 'bg-amber-50/60 border-amber-200 text-amber-950'
+                  }`}>
+                    <div className="space-y-0.5">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-bold uppercase tracking-wider text-[10px] text-slate-500">
+                          NCVET Pre-Screening Matrix:
+                        </span>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold ${
+                          match.eligibility.eligibility_status === 'ELIGIBLE'
+                            ? 'bg-emerald-200 text-emerald-900'
+                            : match.eligibility.eligibility_status === 'PROVISIONALLY_ELIGIBLE'
+                            ? 'bg-blue-200 text-blue-900'
+                            : 'bg-amber-200 text-amber-900'
+                        }`}>
+                          {match.eligibility.eligibility_status.replace(/_/g, ' ')}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-700">{match.eligibility.summary_assessment}</p>
+                    </div>
+                    <div className="text-[10px] font-mono text-slate-500 whitespace-nowrap sm:text-right">
+                      Req: {match.eligibility.minimum_experience_required_years}y exp • Declared: {match.eligibility.declared_experience_years}y
+                    </div>
+                  </div>
+                )}
+
                 {/* Overlapping skills & tools chips */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                   {match.rationale.matched_skills.length > 0 && (

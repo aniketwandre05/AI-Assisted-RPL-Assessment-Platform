@@ -126,3 +126,63 @@ def test_assessor_governance_and_worker_prevention(client, worker_headers, asses
     assert report["assessor_final_decision"] == "CERTIFIED"
     assert report["audit_verification"]["is_tamper_evident"] is True
     assert report["score_summary"]["theory"]["percentage"] == 100.0
+    assert "orientation_and_bridge_plan" in report
+    assert report["orientation_and_bridge_plan"]["is_orientation_mandatory"] is True
+    assert report["orientation_and_bridge_plan"]["standard_orientation_hours"] == 12.0
+    assert report["orientation_and_bridge_plan"]["status"] == "ORIENTATION_COMPLETED"
+
+    # Verify QR Code and Public Verification Endpoint
+    sig_hash = fin_data["result"]["signature_hash"]
+    assert report["audit_verification"]["qr_code_data_uri"] is not None
+    assert report["audit_verification"]["qr_code_data_uri"].startswith("data:image/png;base64,")
+    assert report["audit_verification"]["verification_url"] is not None
+
+    verify_res = client.get(f"/api/v1/assessments/verify/{sig_hash}")
+    assert verify_res.status_code == 200
+    v_data = verify_res.get_json()
+    assert v_data["is_valid"] is True
+    assert v_data["verification_status"] == "AUTHENTIC_NCVET_RPL_CERTIFICATE"
+    assert v_data["candidate"]["name"] == worker_user.full_name
+    assert v_data["assessment_outcome"]["final_decision"] == "CERTIFIED"
+
+    invalid_res = client.get("/api/v1/assessments/verify/FAKE_TAMPERED_HASH")
+    assert invalid_res.status_code == 404
+    assert invalid_res.get_json()["is_valid"] is False
+
+def test_ncvet_bridge_course_prescription_on_competency_gap(client, assessor_headers, worker_user, sample_qualification):
+    """
+    Tests that candidates with competency deficits receive an NCVET 12-hour modular bridge prescription.
+    """
+    session_res = client.post("/api/v1/assessments/sessions", headers=assessor_headers, json={
+        "worker_id": worker_user.id,
+        "qualification_id": sample_qualification.id
+    })
+    session_id = session_res.get_json()["session"]["id"]
+    detail = client.get(f"/api/v1/assessments/sessions/{session_id}", headers=assessor_headers).get_json()["session"]
+
+    # Theory NOS passed (Level 4), but Practical NOS failed (Level 1 - Not Demonstrated)
+    for s in detail["criterion_scores"]:
+        level = 4 if s.get("criterion_type") == "Theory" else 1
+        client.post(f"/api/v1/assessments/sessions/{session_id}/scores", headers=assessor_headers, json={
+            "scores": [{"criterion_id": s["criterion_id"], "rubric_level": level}]
+        })
+
+    # Add general evidence to satisfy evidence check
+    client.post(f"/api/v1/assessments/sessions/{session_id}/evidence", headers=assessor_headers, json={
+        "evidence_type": "video",
+        "title": "General demonstration evidence"
+    })
+
+    calc_res = client.post(f"/api/v1/assessments/sessions/{session_id}/calculate", headers=assessor_headers)
+    calc = calc_res.get_json()["calculation"]
+
+    assert calc["provisional_recommendation"] == "NOT_YET_COMPETENT"
+    plan = calc["orientation_and_bridge_plan"]
+    assert plan["requires_bridge_course"] is True
+    assert plan["status"] == "BRIDGE_TRAINING_PRESCRIBED"
+    assert len(plan["bridge_modules"]) >= 1
+    failing_module = plan["bridge_modules"][0]
+    assert failing_module["recommended_bridge_hours"] == 12.0
+    assert "Practical score" in failing_module["reasons"][0]
+    assert "below standard" in failing_module["reasons"][0]
+

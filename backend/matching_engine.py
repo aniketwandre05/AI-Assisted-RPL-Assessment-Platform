@@ -54,6 +54,57 @@ class MatchingEngine:
         combined = list(dict.fromkeys(phrases + cleaned))
         return combined[:20]
 
+    @staticmethod
+    def evaluate_candidate_eligibility(
+        profile: WorkerProfile,
+        qual: Qualification
+    ) -> Dict[str, Any]:
+        """
+        Evaluates candidate eligibility against official NSQF / NCVET Recognition of Prior Learning
+        Entry Requirements Matrix.
+        RPL principle: Relevant informal work experience compensates for lack of formal educational qualifications.
+        """
+        level = qual.nsqf_level or 4.0
+        exp = profile.experience_years or 0.0
+        edu = (profile.education_level or "").lower()
+
+        # Minimum required baseline experience by NSQF level under RPL framework
+        if level <= 3.0:
+            min_exp_required = 1.0
+        elif level <= 4.0:
+            min_exp_required = 1.5
+        elif level <= 5.0:
+            min_exp_required = 2.0
+        else:
+            min_exp_required = 3.0
+
+        # Education evaluation
+        has_higher_edu = any(k in edu for k in ["diploma", "graduate", "degree", "bachelor", "master", "12th"])
+
+        if exp >= min_exp_required:
+            status = "ELIGIBLE"
+            summary = f"Candidate possesses {exp} years of trade experience, fulfilling the {min_exp_required} yr minimum required for NSQF Level {level} RPL assessment."
+        elif exp >= (min_exp_required * 0.6) and has_higher_edu:
+            status = "PROVISIONALLY_ELIGIBLE"
+            summary = f"Candidate has {exp} years experience backed by formal educational background ({profile.education_level}); provisionally eligible subject to 12-hour orientation."
+        elif exp >= (min_exp_required * 0.6):
+            status = "PROVISIONALLY_ELIGIBLE"
+            summary = f"Candidate has {exp} years experience (benchmark: {min_exp_required} yrs); eligible with mandatory 12-hour orientation & bridge support."
+        else:
+            status = "INSUFFICIENT_EXPERIENCE"
+            summary = f"Candidate has {exp} years experience, which is below the minimum threshold ({min_exp_required} yrs) for NSQF Level {level} RPL. Short-term training (STT) recommended instead."
+
+        return {
+            "eligibility_status": status,
+            "target_nsqf_level": level,
+            "declared_experience_years": exp,
+            "minimum_experience_required_years": min_exp_required,
+            "declared_education": profile.education_level or "Not specified",
+            "is_experience_sufficient": exp >= min_exp_required,
+            "summary_assessment": summary,
+            "ncvet_rule_reference": f"NCVET RPL Guidelines Entry Criteria for NSQF Level {level}"
+        }
+
     @classmethod
     def match_worker_profile(
         cls,
@@ -178,16 +229,20 @@ class MatchingEngine:
             else:
                 confidence = "LOW"
 
+            eligibility = cls.evaluate_candidate_eligibility(profile, qual)
+
             rationale = {
                 "confidence": confidence,
                 "score_percentage": final_score,
                 "matched_skills": matched_terms[:6],
                 "matched_tools": matched_tools_list[:4],
                 "matched_criteria": matched_criteria_citations[:5],
+                "eligibility": eligibility,
                 "reason_summary": (
                     f"Identified {final_score}% alignment between declared role '{profile.occupation_title}' "
                     f"and official NSQF Level {qual.nsqf_level} standard '{qual.title}' "
-                    f"({len(matched_criteria_citations)} performance criteria cited)."
+                    f"({len(matched_criteria_citations)} performance criteria cited). "
+                    f"Eligibility Status: {eligibility['eligibility_status']}."
                 )
             }
 
@@ -210,6 +265,7 @@ class MatchingEngine:
                 "is_synthetic": qual.is_synthetic,
                 "match_score": final_score,
                 "confidence": confidence,
+                "eligibility": eligibility,
                 "rationale": rationale
             })
 

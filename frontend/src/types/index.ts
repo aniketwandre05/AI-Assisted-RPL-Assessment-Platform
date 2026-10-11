@@ -43,6 +43,18 @@ export interface MatchRationale {
   matched_tools: string[];
   matched_criteria: CriterionCitation[];
   reason_summary: string;
+  eligibility?: CandidateEligibility;
+}
+
+export interface CandidateEligibility {
+  eligibility_status: 'ELIGIBLE' | 'PROVISIONALLY_ELIGIBLE' | 'INSUFFICIENT_EXPERIENCE';
+  target_nsqf_level: number;
+  declared_experience_years: number;
+  minimum_experience_required_years: number;
+  declared_education: string;
+  is_experience_sufficient: boolean;
+  summary_assessment: string;
+  ncvet_rule_reference: string;
 }
 
 export interface QualificationMatch {
@@ -56,6 +68,7 @@ export interface QualificationMatch {
   is_synthetic: boolean;
   match_score: number;
   confidence: 'HIGH' | 'MEDIUM' | 'LOW';
+  eligibility?: CandidateEligibility;
   rationale: MatchRationale;
 }
 
@@ -261,6 +274,24 @@ export interface CompetencyReport {
     assessed_count: number;
   }>;
   provisional_recommendation: string;
+  orientation_and_bridge_plan?: {
+    ncvet_mandate_reference: string;
+    is_orientation_mandatory: boolean;
+    standard_orientation_hours: number;
+    orientation_modules: Array<{ module_name: string; hours: number }>;
+    requires_bridge_course: boolean;
+    bridge_modules: Array<{
+      nos_code: string;
+      nos_title: string;
+      theory_percentage: number;
+      practical_percentage: number;
+      reasons: string[];
+      recommended_bridge_hours: number;
+      target_curriculum: string;
+    }>;
+    status: string;
+    prescribed_action: string;
+  };
   assessor_final_decision?: string;
   assessor_remarks?: string;
   evidence_manifest: AssessmentEvidence[];
@@ -268,5 +299,7 @@ export interface CompetencyReport {
     is_tamper_evident: boolean;
     incomplete_criteria_count: number;
     missing_evidence_count: number;
+    verification_url?: string;
+    qr_code_data_uri?: string;
   };
 }

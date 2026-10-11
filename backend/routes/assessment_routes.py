@@ -260,6 +260,20 @@ def get_competency_report(session_id: str):
     qual = session.qualification
     calc = ScoringEngine.calculate_session_scores(session)
 
+    sig_hash = session.assessor_signature_hash or f"DRAFT-{session.id[:8]}"
+    verify_url = f"{request.host_url.rstrip('/')}/verify/{sig_hash}"
+    qr_data_uri = None
+    try:
+        import qrcode
+        import io
+        import base64
+        qr_img = qrcode.make(verify_url)
+        buf = io.BytesIO()
+        qr_img.save(buf, format="PNG")
+        qr_data_uri = "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+    except Exception:
+        pass
+
     report = {
         "report_id": f"RPL-COMP-RPT-{session.id[:8].upper()}",
         "session_id": session.id,
@@ -290,14 +304,67 @@ def get_competency_report(session_id: str):
         "score_summary": calc["scores"],
         "nos_breakdown": calc["nos_subtotals"],
         "provisional_recommendation": session.provisional_recommendation,
+        "orientation_and_bridge_plan": calc.get("orientation_and_bridge_plan"),
         "assessor_final_decision": session.assessor_final_decision,
         "assessor_remarks": session.assessor_remarks,
         "evidence_manifest": [ev.to_dict() for ev in session.evidence_files],
         "audit_verification": {
             "is_tamper_evident": session.assessor_signature_hash is not None,
             "incomplete_criteria_count": session.incomplete_criteria_count,
-            "missing_evidence_count": session.missing_evidence_count
+            "missing_evidence_count": session.missing_evidence_count,
+            "verification_url": verify_url,
+            "qr_code_data_uri": qr_data_uri
         }
     }
 
     return jsonify({"report": report}), 200
+
+@assessment_bp.route("/verify/<string:signature_hash>", methods=["GET"])
+def verify_certificate(signature_hash: str):
+    """
+    Public digital verification endpoint for third-party employers, auditors,
+    and NCVET inspectors scanning the certificate QR code.
+    Requires no authentication so anyone with the physical or digital certificate can verify it.
+    """
+    session = AssessmentSession.query.filter_by(assessor_signature_hash=signature_hash).first()
+    if not session:
+        return jsonify({
+            "is_valid": False,
+            "verification_status": "INVALID_OR_NOT_FOUND",
+            "message": "Certificate signature hash does not match any official assessment record on the national registry."
+        }), 404
+
+    qual = session.qualification
+    worker = session.worker
+    assessor = session.assessor
+
+    from backend.scoring_engine import utc_now
+
+    return jsonify({
+        "is_valid": True,
+        "verification_status": "AUTHENTIC_NCVET_RPL_CERTIFICATE",
+        "certificate_id": f"RPL-COMP-RPT-{session.id[:8].upper()}",
+        "candidate": {
+            "name": worker.full_name,
+            "masked_aadhaar": f"XXXX-XXXX-{worker.aadhaar_last_four}" if worker.aadhaar_last_four else "Verified",
+            "state": worker.state
+        },
+        "qualification": {
+            "title": qual.title,
+            "nqr_code": qual.nqr_code,
+            "nsqf_level": qual.nsqf_level,
+            "sector": qual.sector,
+            "awarding_body": qual.awarding_body,
+            "credits": qual.credits
+        },
+        "assessment_outcome": {
+            "final_decision": session.assessor_final_decision,
+            "theory_percentage": session.theory_percentage,
+            "practical_percentage": session.practical_percentage,
+            "overall_percentage": session.overall_percentage,
+            "certified_date": session.signed_off_at.isoformat() if session.signed_off_at else None,
+            "assessor_name": assessor.full_name if assessor else "Certified Assessor",
+            "signature_hash": session.assessor_signature_hash
+        },
+        "verification_timestamp": utc_now().isoformat()
+    }), 200

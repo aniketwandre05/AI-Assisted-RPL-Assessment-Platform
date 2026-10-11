@@ -1,6 +1,6 @@
 {
-  "benchmark_id": "CONSISTENCY-BENCH-20261011-202653",
-  "evaluated_at": "2026-10-11T20:26:53.407593+00:00",
+  "benchmark_id": "CONSISTENCY-BENCH-20261011-210949",
+  "evaluated_at": "2026-10-11T21:09:49.657625+00:00",
   "methodology": "Two-way random effects model measuring inter-assessor agreement (ICC) across simulated candidates",
   "sample_size": {
     "num_candidates": 10,

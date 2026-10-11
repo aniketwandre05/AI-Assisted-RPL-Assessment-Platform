@@ -10,7 +10,10 @@ import {
   FileCheck, 
   Lock, 
   Layers, 
-  Building 
+  Building,
+  BookOpen,
+  Clock,
+  AlertTriangle 
 } from 'lucide-react';
 
 interface CompetencyReportProps {
@@ -181,6 +184,71 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
           </div>
         </div>
 
+        {/* NCVET 12-Hour Mandatory Orientation & Bridge Course Prescription */}
+        {report.orientation_and_bridge_plan && (
+          <div className="p-5 bg-gradient-to-br from-indigo-50/70 to-blue-50/50 rounded-xl border border-indigo-200/80 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <BookOpen className="w-5 h-5 text-indigo-700" />
+                <h2 className="text-xs font-bold uppercase tracking-wider text-indigo-950">
+                  NCVET Mandatory 12-Hour Orientation & Bridge Course Prescription
+                </h2>
+              </div>
+              <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full ${
+                report.orientation_and_bridge_plan.status === 'ORIENTATION_COMPLETED'
+                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                  : 'bg-amber-100 text-amber-800 border border-amber-300'
+              }`}>
+                {report.orientation_and_bridge_plan.status.replace(/_/g, ' ')}
+              </span>
+            </div>
+
+            <p className="text-xs text-slate-700">
+              <strong>Prescribed Recommendation:</strong> {report.orientation_and_bridge_plan.prescribed_action}
+            </p>
+
+            {/* Standard 12-Hour Orientation Breakdown */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px]">
+              {report.orientation_and_bridge_plan.orientation_modules.map((m, idx) => (
+                <div key={idx} className="bg-white/80 p-2.5 rounded-lg border border-indigo-100 shadow-2xs space-y-1">
+                  <div className="flex items-center text-indigo-800 font-semibold">
+                    <Clock className="w-3.5 h-3.5 mr-1 text-indigo-500" />
+                    <span>{m.hours} Hours</span>
+                  </div>
+                  <p className="text-slate-600 line-clamp-2">{m.module_name}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Specific Remedial Bridge Modules if candidate has gaps */}
+            {report.orientation_and_bridge_plan.bridge_modules.length > 0 && (
+              <div className="mt-3 p-3 bg-amber-50 rounded-lg border border-amber-200 space-y-2">
+                <div className="flex items-center text-amber-900 text-xs font-bold">
+                  <AlertTriangle className="w-4 h-4 mr-1 text-amber-600" />
+                  <span>Targeted NOS Bridge Upskilling Modules (Prior to Re-assessment):</span>
+                </div>
+                <div className="space-y-1.5">
+                  {report.orientation_and_bridge_plan.bridge_modules.map((bm, idx) => (
+                    <div key={idx} className="p-2 bg-white rounded border border-amber-100 text-xs flex justify-between items-center">
+                      <div>
+                        <div className="font-semibold text-slate-900">{bm.nos_code}: {bm.nos_title}</div>
+                        <div className="text-[11px] text-amber-700">{bm.reasons.join(', ')}</div>
+                      </div>
+                      <span className="text-[11px] font-mono font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded">
+                        +{bm.recommended_bridge_hours}h Bridge
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="text-[10px] text-slate-400 font-mono italic">
+              Governed by: {report.orientation_and_bridge_plan.ncvet_mandate_reference}
+            </div>
+          </div>
+        )}
+
         {/* Evidence Manifest */}
         <div className="space-y-3">
           <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">
@@ -234,14 +302,42 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
             </div>
           </div>
 
-          {/* Tamper-Evident SHA256 Signature Stamp */}
-          <div className="p-3 bg-slate-950 text-slate-300 rounded-lg text-[11px] font-mono space-y-1">
-            <div className="flex items-center space-x-1.5 text-amber-400 font-bold">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>CRYPTOGRAPHIC AUDIT SIGNATURE (TAMPER-EVIDENT):</span>
-            </div>
-            <div className="break-all text-slate-400">
-              {report.assessment_details.signature_hash || 'SHA256: UNSIGNED_DRAFT_ASSESSMENT'}
+          {/* Tamper-Evident SHA256 Signature Stamp & Digital Verification QR Code */}
+          <div className="flex flex-col md:flex-row items-center gap-4 p-4 bg-slate-950 text-slate-300 rounded-xl">
+            {report.audit_verification.qr_code_data_uri && (
+              <div className="flex flex-col items-center p-2 bg-white rounded-lg shadow-sm shrink-0">
+                <img
+                  src={report.audit_verification.qr_code_data_uri}
+                  alt="NCVET Verification QR"
+                  className="w-24 h-24 object-contain"
+                />
+                <span className="text-[9px] font-bold text-slate-700 uppercase tracking-tighter mt-1">
+                  Scan to Verify
+                </span>
+              </div>
+            )}
+
+            <div className="space-y-1.5 font-mono text-[11px] flex-1 text-center md:text-left">
+              <div className="flex items-center justify-center md:justify-start space-x-1.5 text-amber-400 font-bold">
+                <ShieldCheck className="w-4 h-4" />
+                <span>CRYPTOGRAPHIC AUDIT SIGNATURE (TAMPER-EVIDENT):</span>
+              </div>
+              <div className="break-all text-slate-400">
+                {report.assessment_details.signature_hash || 'SHA256: UNSIGNED_DRAFT_ASSESSMENT'}
+              </div>
+              {report.audit_verification.verification_url && (
+                <div className="pt-1 text-[10px] text-slate-400 flex flex-wrap items-center justify-center md:justify-start gap-1">
+                  <span>Registry URL:</span>
+                  <a
+                    href={report.audit_verification.verification_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-indigo-400 hover:text-indigo-300 underline break-all"
+                  >
+                    {report.audit_verification.verification_url}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -192,6 +192,53 @@ class ScoringEngine:
 
         db.session.commit()
 
+        # NCVET 12-Hour Mandatory Orientation & Bridge Course Prescription
+        bridge_modules = []
+        for nos_id, nos_data in nos_map.items():
+            th_pct_nos = round((nos_data["theory_score"] / nos_data["max_theory"] * 100.0), 1) if nos_data["max_theory"] > 0 else 100.0
+            pr_pct_nos = round((nos_data["practical_score"] / nos_data["max_practical"] * 100.0), 1) if nos_data["max_practical"] > 0 else 100.0
+            
+            reasons = []
+            if th_pct_nos < min_th_pct:
+                reasons.append(f"Theory score {th_pct_nos}% below standard {min_th_pct}%")
+            if pr_pct_nos < min_pr_pct:
+                reasons.append(f"Practical score {pr_pct_nos}% below standard {min_pr_pct}%")
+            
+            if reasons:
+                bridge_modules.append({
+                    "nos_code": nos_data.get("nos_code", ""),
+                    "nos_title": nos_data.get("nos_title") or nos_data.get("title", ""),
+                    "theory_percentage": th_pct_nos,
+                    "practical_percentage": pr_pct_nos,
+                    "reasons": reasons,
+                    "recommended_bridge_hours": 12.0,
+                    "target_curriculum": f"NCVET Modular Bridge Training for {nos_data.get('nos_title') or nos_data.get('title', '')}"
+                })
+
+        orientation_and_bridge_plan = {
+            "ncvet_mandate_reference": "NCVET RPL Guidelines 2023 / 2025 Section 6.2 - Mandatory Orientation & Bridge Training",
+            "is_orientation_mandatory": True,
+            "standard_orientation_hours": 12.0,
+            "orientation_modules": [
+                {"module_name": "Domain Specific Skills Refresh & Practical Practice", "hours": 6.0},
+                {"module_name": "Soft Skills, Communication & Work Ethics", "hours": 3.0},
+                {"module_name": "Health, Safety, PPE, Digital Literacy & UPI / Cashless Payments", "hours": 3.0}
+            ],
+            "requires_bridge_course": len(bridge_modules) > 0 or rec == "NOT_YET_COMPETENT",
+            "bridge_modules": bridge_modules,
+            "status": "ORIENTATION_COMPLETED" if rec == "RECOMMENDED_CERTIFIED" else (
+                "BRIDGE_TRAINING_PRESCRIBED" if bridge_modules else "ORIENTATION_PENDING"
+            ),
+            "prescribed_action": (
+                "Mandatory 12-hour orientation successfully fulfilled. Candidate certified under NSQF standards."
+                if rec == "RECOMMENDED_CERTIFIED" else (
+                    f"Candidate recommended for {len(bridge_modules) * 12 or 12}-Hour NCVET Bridge Training across {len(bridge_modules)} module(s) prior to modular re-assessment."
+                    if bridge_modules else
+                    "Complete all unassessed criteria and mandatory evidence before orientation certification."
+                )
+            )
+        }
+
         return {
             "session_id": session.id,
             "qualification_title": qual.title,
@@ -213,7 +260,8 @@ class ScoringEngine:
                 "missing_evidence_codes": missing_evidence_criteria
             },
             "provisional_recommendation": rec,
-            "provisional_reason": rec_reason
+            "provisional_reason": rec_reason,
+            "orientation_and_bridge_plan": orientation_and_bridge_plan
         }
 
     @staticmethod

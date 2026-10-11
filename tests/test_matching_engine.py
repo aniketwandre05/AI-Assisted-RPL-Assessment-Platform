@@ -78,3 +78,42 @@ def test_matching_api_endpoint(client, worker_headers, worker_user, sample_quali
     assert data["is_match_found"] is True
     assert len(data["matches"]) >= 1
     assert "Developer" in data["top_match"]["title"]
+    assert "eligibility" in data["top_match"]
+    assert data["top_match"]["eligibility"]["eligibility_status"] in ["ELIGIBLE", "PROVISIONALLY_ELIGIBLE"]
+
+def test_candidate_eligibility_prescreening_matrix(worker_user, sample_qualification):
+    """
+    Tests NCVET eligibility matrix: ELIGIBLE, PROVISIONALLY_ELIGIBLE, and INSUFFICIENT_EXPERIENCE.
+    """
+    # 1. Candidate with ample experience -> ELIGIBLE
+    prof1 = WorkerProfile(
+        user_id=worker_user.id,
+        occupation_title="Full Stack Developer",
+        experience_years=3.5,
+        education_level="12th Grade"
+    )
+    e1 = MatchingEngine.evaluate_candidate_eligibility(prof1, sample_qualification)
+    assert e1["eligibility_status"] == "ELIGIBLE"
+    assert e1["is_experience_sufficient"] is True
+
+    # 2. Candidate with 1.2 years + Diploma -> PROVISIONALLY_ELIGIBLE
+    prof2 = WorkerProfile(
+        user_id=worker_user.id,
+        occupation_title="Web Developer",
+        experience_years=1.2,
+        education_level="Polytechnic Diploma"
+    )
+    e2 = MatchingEngine.evaluate_candidate_eligibility(prof2, sample_qualification)
+    assert e2["eligibility_status"] == "PROVISIONALLY_ELIGIBLE"
+
+    # 3. Candidate with only 0.2 years -> INSUFFICIENT_EXPERIENCE
+    prof3 = WorkerProfile(
+        user_id=worker_user.id,
+        occupation_title="Junior Trainee",
+        experience_years=0.2,
+        education_level="10th Grade"
+    )
+    e3 = MatchingEngine.evaluate_candidate_eligibility(prof3, sample_qualification)
+    assert e3["eligibility_status"] == "INSUFFICIENT_EXPERIENCE"
+    assert e3["is_experience_sufficient"] is False
+

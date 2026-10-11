@@ -149,7 +149,7 @@ Open **`http://localhost:5173`**.
 
 ## 8. Automated Test Execution
 
-Run the complete test suite (31 automated tests across 10 suites):
+Run the complete test suite (33 automated tests across 10 suites):
 ```bash
 python -m pytest tests/ -v
 ```
@@ -159,19 +159,18 @@ Output:
 tests/test_auth_and_rbac.py::test_user_registration_and_login PASSED
 tests/test_auth_and_rbac.py::test_worker_cannot_access_other_worker_records PASSED
 tests/test_auth_and_rbac.py::test_worker_can_create_and_update_own_profile PASSED
-tests/test_checklist_validation.py::test_checklist_1_worker_can_register_and_login PASSED
-tests/test_checklist_validation.py::test_checklist_2_worker_can_create_edit_submit_declaration PASSED
-tests/test_checklist_validation.py::test_checklist_3_traceable_qualification_match_and_explicit_no_match PASSED
-tests/test_checklist_validation.py::test_checklist_4_assessor_can_open_session_and_view_criteria PASSED
-tests/test_checklist_validation.py::test_checklist_5_assessor_can_score_criteria_and_attach_evidence PASSED
-tests/test_checklist_validation.py::test_checklist_6_missing_evidence_and_incomplete_scoring_flagged PASSED
-tests/test_checklist_validation.py::test_checklist_7_score_calculations_follow_configured_rubric PASSED
-tests/test_checklist_validation.py::test_checklist_8_only_authorized_assessor_can_finalize_decision PASSED
-tests/test_checklist_validation.py::test_checklist_9_competency_report_matches_saved_records PASSED
-tests/test_checklist_validation.py::test_checklist_10_worker_cannot_access_other_worker_records PASSED
-tests/test_checklist_validation.py::test_checklist_11_forms_and_checklists_survive_offline_storage_structure PASSED
-tests/test_checklist_validation.py::test_checklist_12_pending_changes_sync_idempotently_without_duplicates PASSED
-tests/test_checklist_validation.py::test_checklist_13_evaluation_tests_produce_reproducible_reports PASSED
+tests/test_checklist_validation.py::test_checklist_item_1_worker_register_and_login PASSED
+tests/test_checklist_validation.py::test_checklist_item_2_worker_skill_declaration PASSED
+tests/test_checklist_validation.py::test_checklist_item_3_qualification_matching_traceable_or_nomatch PASSED
+tests/test_checklist_validation.py::test_checklist_item_4_assessor_opens_session_with_correct_criteria PASSED
+tests/test_checklist_validation.py::test_checklist_item_5_and_6_scoring_and_missing_evidence_flagged PASSED
+tests/test_checklist_validation.py::test_checklist_item_7_score_calculations_follow_configured_rubric PASSED
+tests/test_checklist_validation.py::test_checklist_item_8_only_authorized_assessor_can_finalize PASSED
+tests/test_checklist_validation.py::test_checklist_item_9_competency_report_matches_assessment_records PASSED
+tests/test_checklist_validation.py::test_checklist_item_10_worker_isolation PASSED
+tests/test_checklist_validation.py::test_checklist_item_11_forms_and_checklists_survive_offline_refresh PASSED
+tests/test_checklist_validation.py::test_checklist_item_12_pending_changes_sync_without_duplicates PASSED
+tests/test_checklist_validation.py::test_checklist_item_13_evaluation_tests_produce_reproducible_report PASSED
 tests/test_consistency_evaluation.py::test_inter_assessor_consistency_evaluation PASSED
 tests/test_csv_datasets.py::test_worker_skill_profiles_csv_dataset PASSED
 tests/test_csv_datasets.py::test_assessment_test_cases_csv_dataset PASSED
@@ -180,6 +179,7 @@ tests/test_matching_engine.py::test_extract_skill_terms PASSED
 tests/test_matching_engine.py::test_match_worker_profile_software_developer PASSED
 tests/test_matching_engine.py::test_explicit_no_match_for_unrelated_profession PASSED
 tests/test_matching_engine.py::test_matching_api_endpoint PASSED
+tests/test_matching_engine.py::test_candidate_eligibility_prescreening_matrix PASSED
 tests/test_nqr_importer.py::test_nqr_master_importer PASSED
 tests/test_pdf_importer.py::test_full_stack_pdf_importer PASSED
 tests/test_qualification_models.py::test_qualification_creation_and_serialization PASSED
@@ -187,9 +187,10 @@ tests/test_qualification_models.py::test_qualification_hierarchy PASSED
 tests/test_scoring_engine.py::test_session_creation_and_criteria_checklist PASSED
 tests/test_scoring_engine.py::test_missing_evidence_and_scoring_rubric PASSED
 tests/test_scoring_engine.py::test_assessor_governance_and_worker_prevention PASSED
+tests/test_scoring_engine.py::test_ncvet_bridge_course_prescription_on_competency_gap PASSED
 tests/test_validation_report.py::test_validation_reporter PASSED
 
-======================== 31 passed, 1 warning in 6.48s ========================
+======================== 33 passed, 1 warning in 12.8s ========================
 ```
 
 ---
