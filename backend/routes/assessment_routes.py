@@ -327,6 +327,12 @@ def verify_certificate(signature_hash: str):
     Requires no authentication so anyone with the physical or digital certificate can verify it.
     """
     session = AssessmentSession.query.filter_by(assessor_signature_hash=signature_hash).first()
+    is_draft = False
+    if not session and signature_hash.startswith("DRAFT-"):
+        short_id = signature_hash.replace("DRAFT-", "").strip()
+        session = AssessmentSession.query.filter(AssessmentSession.id.startswith(short_id)).first()
+        is_draft = True
+
     if not session:
         return jsonify({
             "is_valid": False,
@@ -342,7 +348,8 @@ def verify_certificate(signature_hash: str):
 
     return jsonify({
         "is_valid": True,
-        "verification_status": "AUTHENTIC_NCVET_RPL_CERTIFICATE",
+        "is_draft": is_draft,
+        "verification_status": "PROVISIONAL_DRAFT_ASSESSMENT" if is_draft else "AUTHENTIC_NCVET_RPL_CERTIFICATE",
         "certificate_id": f"RPL-COMP-RPT-{session.id[:8].upper()}",
         "candidate": {
             "name": worker.full_name,

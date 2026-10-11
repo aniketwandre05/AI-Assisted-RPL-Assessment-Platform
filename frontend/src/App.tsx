@@ -12,22 +12,34 @@ import { AssessorDashboardPage } from './pages/AssessorDashboardPage';
 import { AssessmentSessionPage } from './pages/AssessmentSessionPage';
 import { CompetencyReportPage } from './pages/CompetencyReportPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
+import { PublicVerificationPage } from './pages/PublicVerificationPage';
 
 const AppContent: React.FC = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
-  const [currentView, setCurrentView] = useState<string>('landing');
-  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+
+  const getInitialRoute = () => {
+    const path = window.location.pathname;
+    if (path.startsWith('/verify/')) {
+      const hash = path.replace('/verify/', '').trim();
+      return { view: 'verify', id: hash };
+    }
+    return { view: 'landing', id: null };
+  };
+
+  const initial = getInitialRoute();
+  const [currentView, setCurrentView] = useState<string>(initial.view);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(initial.id);
 
   // Automatically redirect to homepage when logged out from a protected view
   useEffect(() => {
-    if (!isAuthenticated && !['landing', 'login', 'register'].includes(currentView)) {
+    if (!isAuthenticated && !['landing', 'login', 'register', 'verify'].includes(currentView)) {
       setCurrentView('landing');
       setCurrentSessionId(null);
     }
   }, [isAuthenticated, currentView]);
 
   const handleNavigate = (view: string, id?: string) => {
-    if (id) {
+    if (id !== undefined) {
       setCurrentSessionId(id);
     }
     setCurrentView(view);
@@ -53,6 +65,8 @@ const AppContent: React.FC = () => {
         return <LoginPage onNavigate={handleNavigate} />;
       case 'register':
         return <RegisterPage onNavigate={handleNavigate} />;
+      case 'verify':
+        return <PublicVerificationPage signatureHash={currentSessionId || ''} onNavigate={handleNavigate} />;
       case 'worker-dashboard':
         return <WorkerDashboardPage onNavigate={handleNavigate} />;
       case 'worker-profile':

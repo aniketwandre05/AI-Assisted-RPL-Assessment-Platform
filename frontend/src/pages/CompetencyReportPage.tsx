@@ -326,7 +326,7 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
                 {report.assessment_details.signature_hash || 'SHA256: UNSIGNED_DRAFT_ASSESSMENT'}
               </div>
               {report.audit_verification.verification_url && (
-                <div className="pt-1 text-[10px] text-slate-400 flex flex-wrap items-center justify-center md:justify-start gap-1">
+                <div className="pt-1 text-[10px] text-slate-400 flex flex-wrap items-center justify-center md:justify-start gap-2">
                   <span>Registry URL:</span>
                   <a
                     href={report.audit_verification.verification_url}
@@ -336,6 +336,13 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
                   >
                     {report.audit_verification.verification_url}
                   </a>
+                  <button
+                    type="button"
+                    onClick={() => onNavigate('verify', report.assessment_details.signature_hash || `DRAFT-${report.session_id.slice(0, 8)}`)}
+                    className="no-print px-2 py-0.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-sans text-[10px] font-semibold transition"
+                  >
+                    Open Verification Audit View
+                  </button>
                 </div>
               )}
             </div>

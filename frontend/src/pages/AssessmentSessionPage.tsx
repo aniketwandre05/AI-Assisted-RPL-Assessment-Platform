@@ -190,7 +190,18 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
       return;
     }
 
+    setIsSaving(true);
     try {
+      // First save all current rubric scores to guarantee the backend is 100% synchronized
+      const scoreUpdates = Object.entries(localScores).map(([critId, data]) => ({
+        criterion_id: critId,
+        rubric_level: data.rubric_level,
+        assessor_notes: data.assessor_notes,
+      }));
+      if (scoreUpdates.length > 0 && isOnline) {
+        await api.assessments.saveScores(sessionId, scoreUpdates);
+      }
+
       const res = await api.assessments.finalize(sessionId, {
         decision: finalDecision,
         remarks: finalRemarks,
@@ -202,6 +213,8 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
       setTimeout(() => onNavigate('competency-report', sessionId), 1200);
     } catch (err: any) {
       alert(err.message || 'Failed to finalize assessment');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -417,9 +430,14 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
                       {/* Evidence Button */}
                       <div className="flex items-center space-x-2">
                         {hasEvidence ? (
-                          <span className="inline-flex items-center px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-md">
-                            <CheckCircle2 className="w-3 h-3 mr-1" /> Evidence Attached
-                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setEvidenceModalCritId(pc.id)}
+                            className="inline-flex items-center px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-md border border-emerald-300 transition shadow-xs"
+                            title="Click to review or add more evidence files"
+                          >
+                            <CheckCircle2 className="w-3 h-3 mr-1 text-emerald-600" /> Evidence Attached (View/Add)
+                          </button>
                         ) : (
                           <button
                             type="button"
@@ -527,16 +545,39 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
             </div>
           </div>
 
-          <div className="pt-2 flex justify-end">
-            <button
-              onClick={handleFinalize}
-              disabled={session.incomplete_criteria_count > 0}
-              className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:opacity-50 text-white font-semibold rounded-lg text-sm shadow-md transition flex items-center space-x-2"
-            >
-              <ShieldCheck className="w-4 h-4" />
-              <span>Sign & Finalize Certification Decision</span>
-            </button>
-          </div>
+          {(() => {
+            const totalCriteria = qualification.occupational_standards?.reduce(
+              (acc, nos) => acc + (nos.performance_criteria?.length || 0), 0
+            ) || 0;
+            const assessedCount = Object.values(localScores).filter((s) => s.rubric_level > 0).length;
+            const pendingCriteriaCount = Math.max(0, totalCriteria - assessedCount);
+            const isCertifyBlocked = finalDecision === 'CERTIFIED' && pendingCriteriaCount > 0;
+
+            return (
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+                {isCertifyBlocked ? (
+                  <div className="text-xs text-amber-400 flex items-center space-x-1.5 self-start sm:self-auto">
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    <span>{pendingCriteriaCount} criteria remain unassessed. Score all criteria to Certify, or select "NOT YET COMPETENT" / "DEFERRED".</span>
+                  </div>
+                ) : (
+                  <div className="text-xs text-emerald-400 flex items-center space-x-1.5 self-start sm:self-auto">
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                    <span>Evaluation ready for official binding sign-off.</span>
+                  </div>
+                )}
+
+                <button
+                  onClick={handleFinalize}
+                  disabled={isCertifyBlocked || isSaving}
+                  className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 disabled:opacity-50 text-white font-semibold rounded-lg text-sm shadow-md transition flex items-center space-x-2 self-end sm:self-auto"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>{isSaving ? 'Synchronizing & Signing...' : 'Sign & Finalize Certification Decision'}</span>
+                </button>
+              </div>
+            );
+          })()}
         </div>
       )}
 
@@ -551,6 +592,36 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
             <p className="text-xs text-slate-500">
               Per Page 6 mandate, video recordings are required for all hands-on practical assessments.
             </p>
+
+            {/* List any already attached evidence for this criterion */}
+            {(() => {
+              const attached = session.evidence_files?.filter((ev) => ev.criterion_id === evidenceModalCritId) || [];
+              if (attached.length === 0) return null;
+              return (
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
+                  <span className="text-[11px] font-bold uppercase text-slate-500 block">Existing Evidence on File ({attached.length}):</span>
+                  <div className="space-y-1.5 max-h-36 overflow-y-auto">
+                    {attached.map((ev) => (
+                      <div key={ev.id} className="flex items-center justify-between text-xs bg-white p-2 rounded-lg border border-slate-200">
+                        <span className="font-medium text-slate-800 truncate mr-2">[{ev.evidence_type}] {ev.title}</span>
+                        {ev.external_url ? (
+                          <a
+                            href={ev.external_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-indigo-600 hover:text-indigo-800 underline shrink-0 text-[11px]"
+                          >
+                            Open File
+                          </a>
+                        ) : (
+                          <span className="text-slate-400 text-[10px]">Saved</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
 
             <form onSubmit={handleAddEvidence} className="space-y-3">
               <div>

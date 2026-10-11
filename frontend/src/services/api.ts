@@ -133,5 +133,24 @@ export const api = {
       ),
     getReport: (sessionId: string) =>
       request<{ report: CompetencyReport }>(`/assessments/sessions/${encodeURIComponent(sessionId)}/report`),
+    verifyCertificate: (signatureHash: string) =>
+      request<{
+        is_valid: boolean;
+        verification_status: string;
+        certificate_id: string;
+        message?: string;
+        candidate?: { name: string; masked_aadhaar: string; state: string };
+        qualification?: { title: string; nqr_code: string; nsqf_level: number; sector: string; awarding_body: string; credits: number };
+        assessment_outcome?: {
+          final_decision: string;
+          theory_percentage: number;
+          practical_percentage: number;
+          overall_percentage: number;
+          certified_date?: string;
+          assessor_name?: string;
+          signature_hash?: string;
+        };
+        verification_timestamp: string;
+      }>(`/assessments/verify/${encodeURIComponent(signatureHash)}`),
   },
 };
