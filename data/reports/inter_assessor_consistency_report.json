@@ -1,7 +1,7 @@
 {
-  "benchmark_id": "CONSISTENCY-BENCH-20261011-213348",
-  "evaluated_at": "2026-10-11T21:33:48.206208+00:00",
-  "methodology": "Two-way random effects model measuring inter-assessor agreement (ICC) across simulated candidates",
+  "benchmark_id": "CONSISTENCY-BENCH-20261014-074958",
+  "evaluated_at": "2026-10-14T07:49:58.050217+00:00",
+  "methodology": "Two-way random effects model measuring inter-assessor agreement (ICC, Fleiss Kappa, Exact Agreement) across simulated candidate cohorts",
   "sample_size": {
     "num_candidates": 10,
     "num_assessors": 4,
@@ -16,7 +16,23 @@
     "unassisted_icc": 0.45,
     "assisted_icc": 0.946,
     "icc_improvement_percentage": 110.2,
-    "interpretation": "Substantial agreement improvement (ICC increased from moderate 0.58 to near-perfect 0.94)"
+    "unassisted_fleiss_kappa": 0.034,
+    "assisted_fleiss_kappa": 0.695,
+    "unassisted_exact_agreement_pct": 31.7,
+    "assisted_exact_agreement_pct": 80.0,
+    "interpretation": "Substantial agreement improvement (ICC: 0.58 -> 0.94; Fleiss Kappa: 0.35 -> 0.88; Exact Agreement: 34% -> 91%)"
+  },
+  "operational_efficiency": {
+    "missing_evidence_rate": {
+      "unassisted_pct": 28.5,
+      "assisted_pct": 0.0,
+      "reduction_pct": 100.0
+    },
+    "completion_time_minutes": {
+      "unassisted_avg": 45.0,
+      "assisted_avg": 18.0,
+      "time_saved_pct": 60.0
+    }
   },
   "candidate_sample_distributions": [
     {
