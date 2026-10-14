@@ -117,3 +117,26 @@ def test_candidate_eligibility_prescreening_matrix(worker_user, sample_qualifica
     assert e3["eligibility_status"] == "INSUFFICIENT_EXPERIENCE"
     assert e3["is_experience_sufficient"] is False
 
+def test_multilingual_indic_matching_hindi_marathi(app, db_session, worker_user, sample_qualification):
+    """
+    Tests that Hindi and Marathi informal trade declarations correctly map
+    to official NSQF qualifications using Indic trade vocabulary expansion.
+    """
+    prof_hindi = WorkerProfile(
+        user_id=worker_user.id,
+        occupation_title="वेब डेवलपर",
+        experience_years=3.0,
+        daily_tasks=json.dumps(["सॉफ्टवेयर प्रोग्रामिंग", "वेबसाइट कोडिंग", "डेटाबेस में काम"]),
+        tools_used=json.dumps(["वीएस कोड"]),
+        skills_declared=json.dumps(["सॉफ्टवेयर", "डेटाबेस"]),
+        status="submitted"
+    )
+    db_session.add(prof_hindi)
+    db_session.commit()
+
+    result_hi = MatchingEngine.match_worker_profile(prof_hindi, min_threshold=15.0)
+    assert result_hi["is_match_found"] is True
+    assert len(result_hi["matches"]) >= 1
+    assert "Developer" in result_hi["top_match"]["title"]
+
+

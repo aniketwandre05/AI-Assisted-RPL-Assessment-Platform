@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { 
   Award, 
   CheckCircle, 
@@ -18,6 +19,7 @@ interface LandingPageProps {
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
   const { isAuthenticated, user, login } = useAuth();
+  const { t } = useLanguage();
 
   const handleQuickLogin = (role: 'worker' | 'assessor' | 'admin') => {
     // Quick demo login buttons for frictionless evaluation
@@ -51,20 +53,18 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
         <div className="max-w-5xl mx-auto text-center">
           <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-semibold uppercase tracking-wider mb-6">
             <Award className="w-4 h-4 text-amber-300" />
-            <span>Ministry of Skill Development & Entrepreneurship (MSDE) • SIH26242</span>
+            <span>{t('landing.badge')}</span>
           </div>
           
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight max-w-4xl mx-auto">
-            AI-Assisted Skill Assessment Tool for <br className="hidden sm:inline" />
+            {t('landing.heroTitle')} <br className="hidden sm:inline" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-indigo-200 to-teal-300">
-              Recognition of Prior Learning (RPL)
+              {t('landing.heroHighlight')}
             </span>
           </h1>
 
           <p className="mt-6 text-base sm:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed">
-            Empowering India's informal workforce to certify experiential on-the-job trade skills against official 
-            <strong> National Skills Qualification Framework (NSQF)</strong> standards. 
-            AI matches your skills with traceable criteria, while certified assessors maintain evaluation integrity.
+            {t('landing.heroDesc')}
           </p>
 
           {/* Quick Action / Login */}
@@ -75,14 +75,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                   onClick={() => onNavigate('register')}
                   className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-indigo-500/25 transition flex items-center space-x-2"
                 >
-                  <span>Register as Worker</span>
+                  <span>{t('landing.registerWorker')}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => onNavigate('login')}
                   className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-lg border border-slate-700 transition"
                 >
-                  Sign In to Account
+                  {t('landing.signInAccount')}
                 </button>
               </>
             ) : (
@@ -103,7 +103,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           {/* 1-Click Evaluation Demo Logins */}
           <div className="mt-10 pt-6 border-t border-slate-800 max-w-2xl mx-auto">
             <span className="text-xs uppercase tracking-wider text-slate-400 font-bold block mb-3">
-              ⚡ 1-Click Test Personas (Pre-seeded with real qualification data)
+              {t('landing.quickPersonas')}
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
               <button
@@ -111,21 +111,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                 className="py-2 px-3 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 transition flex items-center justify-center space-x-1"
               >
                 <Users className="w-3.5 h-3.5 text-blue-400" />
-                <span>Worker (Rajesh Kumar)</span>
+                <span>{t('landing.workerRajesh')}</span>
               </button>
               <button
                 onClick={() => handleQuickLogin('assessor')}
                 className="py-2 px-3 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 transition flex items-center justify-center space-x-1"
               >
                 <FileCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Assessor (Dr. Ananya)</span>
+                <span>{t('landing.assessorAnanya')}</span>
               </button>
               <button
                 onClick={() => handleQuickLogin('admin')}
                 className="py-2 px-3 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 transition flex items-center justify-center space-x-1"
               >
                 <Shield className="w-3.5 h-3.5 text-purple-400" />
-                <span>Administrator</span>
+                <span>{t('landing.administrator')}</span>
               </button>
             </div>
           </div>
@@ -136,10 +136,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
       <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
-            How the AI-Assisted RPL Assessment Operates
+            {t('landing.pillarsTitle')}
           </h2>
           <p className="mt-2 text-slate-600 max-w-2xl mx-auto text-sm sm:text-base">
-            Engineered to overcome manual assessment bottlenecks while strictly adhering to NCVET RPL Guidelines.
+            {t('landing.pillarsDesc')}
           </p>
         </div>
 

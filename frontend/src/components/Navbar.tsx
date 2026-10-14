@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage, Language } from '../context/LanguageContext';
 import { 
   Award, 
   User as UserIcon, 
@@ -10,7 +11,8 @@ import {
   FileText, 
   CheckSquare, 
   Layers, 
-  ShieldCheck 
+  ShieldCheck,
+  Globe 
 } from 'lucide-react';
 
 interface NavbarProps {
@@ -20,6 +22,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
   const { user, isAuthenticated, logout, isOnline, pendingSyncCount, syncOfflineQueue } = useAuth();
+  const { language, setLanguage, t } = useLanguage();
   const [isSyncing, setIsSyncing] = React.useState(false);
 
   const handleSync = async () => {
@@ -43,15 +46,30 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
           <span>Recognition of Prior Learning (RPL) Platform</span>
         </div>
         <div className="flex items-center space-x-3">
+          {/* Language Switcher */}
+          <div className="flex items-center space-x-1.5 bg-slate-900 border border-slate-700/80 rounded px-2 py-0.5 text-xs text-slate-200 shadow-inner">
+            <Globe className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" />
+            <select
+              aria-label="Select platform language"
+              value={language}
+              onChange={(e) => setLanguage(e.target.value as Language)}
+              className="bg-transparent text-slate-200 text-xs font-medium focus:outline-none cursor-pointer pr-1"
+            >
+              <option value="en" className="bg-slate-900 text-slate-200">English (EN)</option>
+              <option value="hi" className="bg-slate-900 text-slate-200">हिंदी (HI)</option>
+              <option value="mr" className="bg-slate-900 text-slate-200">मराठी (MR)</option>
+            </select>
+          </div>
+
           {/* Connectivity Status */}
           <div className="flex items-center space-x-1.5">
             {isOnline ? (
               <span className="flex items-center text-emerald-400">
-                <Wifi className="w-3.5 h-3.5 mr-1" /> Online
+                <Wifi className="w-3.5 h-3.5 mr-1" /> {t('nav.online')}
               </span>
             ) : (
               <span className="flex items-center text-amber-400 font-medium">
-                <WifiOff className="w-3.5 h-3.5 mr-1" /> Offline Mode
+                <WifiOff className="w-3.5 h-3.5 mr-1" /> {t('nav.offline')}
               </span>
             )}
           </div>
@@ -83,8 +101,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               <Award className="w-6 h-6 text-amber-300" />
             </div>
             <div>
-              <span className="text-lg font-bold tracking-tight block">RPL SkillAssess</span>
-              <span className="text-xs text-slate-400 block -mt-1">AI-Assisted NSQF Certification</span>
+              <span className="text-lg font-bold tracking-tight block">{t('nav.brand')}</span>
+              <span className="text-xs text-slate-400 block -mt-1">{t('nav.subbrand')}</span>
             </div>
           </div>
 
@@ -96,7 +114,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                 currentView === 'landing' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
               }`}
             >
-              Home
+              {t('nav.home')}
             </button>
 
             {isAuthenticated && user?.role === 'worker' && (
@@ -107,7 +125,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                     currentView === 'worker-dashboard' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                   }`}
                 >
-                  My Dashboard
+                  {t('nav.myDashboard')}
                 </button>
                 <button
                   onClick={() => onNavigate('worker-profile')}
@@ -115,7 +133,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                     currentView === 'worker-profile' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                   }`}
                 >
-                  <FileText className="w-4 h-4 inline mr-1" /> Skill Declaration
+                  <FileText className="w-4 h-4 inline mr-1" /> {t('nav.skillDeclaration')}
                 </button>
                 <button
                   onClick={() => onNavigate('worker-matches')}
@@ -123,7 +141,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                     currentView === 'worker-matches' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                   }`}
                 >
-                  <Layers className="w-4 h-4 inline mr-1" /> Qualification Matches
+                  <Layers className="w-4 h-4 inline mr-1" /> {t('nav.qualMatches')}
                 </button>
               </>
             )}
@@ -135,7 +153,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                   currentView === 'assessor-dashboard' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                 }`}
               >
-                <CheckSquare className="w-4 h-4 inline mr-1" /> Assessor Portal
+                <CheckSquare className="w-4 h-4 inline mr-1" /> {t('nav.assessorPortal')}
               </button>
             )}
 
@@ -146,7 +164,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                   currentView === 'admin-dashboard' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                 }`}
               >
-                <ShieldCheck className="w-4 h-4 inline mr-1" /> Admin & Audits
+                <ShieldCheck className="w-4 h-4 inline mr-1" /> {t('nav.adminAudits')}
               </button>
             )}
           </nav>
@@ -168,7 +186,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                 <button
                   onClick={handleLogout}
                   className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
-                  title="Logout"
+                  title={t('nav.logout')}
                 >
                   <LogOut className="w-5 h-5" />
                 </button>
@@ -179,13 +197,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                   onClick={() => onNavigate('login')}
                   className="px-3 py-1.5 text-sm font-medium text-slate-200 hover:text-white hover:bg-slate-800 rounded-md transition"
                 >
-                  Sign In
+                  {t('nav.signIn')}
                 </button>
                 <button
                   onClick={() => onNavigate('register')}
                   className="px-3.5 py-1.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-md shadow transition"
                 >
-                  Register
+                  {t('nav.register')}
                 </button>
               </div>
             )}

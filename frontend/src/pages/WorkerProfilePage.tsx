@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
+import { useVoiceInput } from '../hooks/useVoiceInput';
 import { api } from '../services/api';
 import { offlineStorage } from '../services/offlineStorage';
 import { 
@@ -11,7 +13,10 @@ import {
   Save, 
   Plus, 
   X,
-  Layers 
+  Layers,
+  Mic,
+  MicOff,
+  Volume2
 } from 'lucide-react';
 
 interface WorkerProfileProps {
@@ -20,6 +25,7 @@ interface WorkerProfileProps {
 
 export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) => {
   const { user, isOnline } = useAuth();
+  const { language, t, speechLangCode } = useLanguage();
   
   const [occupationTitle, setOccupationTitle] = useState('');
   const [experienceYears, setExperienceYears] = useState<number>(3.0);
@@ -36,26 +42,133 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Suggested trade chips for fast intake
-  const QUICK_TASKS = [
-    'Develop responsive web UI with Angular and TypeScript',
-    'Build REST APIs with Spring Boot and JPA',
-    'Write SQL queries in MySQL workbench and create tables',
-    'Containerize backend services using Docker',
-    'Wire and install solar PV modules on rooftops',
-    'Measure open circuit voltage with digital multimeter',
-    'Install and test MCB distribution breakers',
-  ];
+  // Active voice input tracking
+  const [activeVoiceField, setActiveVoiceField] = useState<string | null>(null);
 
-  const QUICK_TOOLS = [
-    'VS Code', 'MySQL Workbench', 'Postman', 'Git', 'Docker', 'JDK',
-    'Digital Multimeter', 'Clamp Meter', 'Wire Strippers', 'Insulated Screwdrivers'
-  ];
+  const { isListening, error: voiceError, isSupported, startListening, stopListening } = useVoiceInput({
+    langCode: speechLangCode,
+    onTranscript: (text) => {
+      if (activeVoiceField === 'occupation') {
+        setOccupationTitle((prev) => (prev ? `${prev} ${text}` : text));
+      } else if (activeVoiceField === 'task') {
+        setTaskInput((prev) => (prev ? `${prev} ${text}` : text));
+      } else if (activeVoiceField === 'tool') {
+        setToolInput((prev) => (prev ? `${prev} ${text}` : text));
+      } else if (activeVoiceField === 'skill') {
+        setSkillInput((prev) => (prev ? `${prev} ${text}` : text));
+      } else if (activeVoiceField === 'informal') {
+        setInformalTrainingDesc((prev) => (prev ? `${prev} ${text}` : text));
+      }
+    },
+  });
 
-  const QUICK_SKILLS = [
-    'Angular', 'Java', 'Spring Boot', 'MySQL', 'REST APIs', 'Docker', 'HTML5/CSS3',
-    'Solar PV Installation', 'Electrical Safety', 'Circuit Wiring', 'Grounding/Earthing'
-  ];
+  useEffect(() => {
+    if (!isListening) {
+      setActiveVoiceField(null);
+    }
+  }, [isListening]);
+
+  const toggleVoice = (fieldName: string) => {
+    if (isListening && activeVoiceField === fieldName) {
+      stopListening();
+      setActiveVoiceField(null);
+    } else {
+      setActiveVoiceField(fieldName);
+      startListening();
+    }
+  };
+
+  // Localized trade chips for fast intake
+  const QUICK_TASKS_BY_LANG: Record<string, string[]> = {
+    en: [
+      'Develop responsive web UI with Angular and TypeScript',
+      'Build REST APIs with Spring Boot and JPA',
+      'Write SQL queries in MySQL workbench and create tables',
+      'Containerize backend services using Docker',
+      'Wire and install solar PV modules on rooftops',
+      'Measure open circuit voltage with digital multimeter',
+      'Install and test MCB distribution breakers',
+    ],
+    hi: [
+      'सोलर पैनल लगाना और रूफटॉप वायरिंग करना',
+      'डिजिटल मल्टीमीटर से ओपन सर्किट वोल्टेज मापना',
+      'एमसीबी डिस्ट्रीब्यूशन बॉक्स और ब्रेकर की फिटिंग करना',
+      'वेबसाइट यूजर इंटरफेस और यूआई (UI) तैयार करना',
+      'स्प्रिंग बूट और डेटाबेस में एपीआई (REST API) बनाना',
+      'पाइपलाइन फिटिंग, नल और वाल्व रिपेयर करना',
+    ],
+    mr: [
+      'सोलर पॅनेल बसवणे आणि रूफटॉप वायरिंग करणे',
+      'डिजिटल मल्टीमीटरने व्होल्टेज आणि करंट तपासणे',
+      'एमसीबी वितरण बॉक्स आणि फ्युज बसवणे',
+      'वेबसाईट युझर इंटरफेस तयार करणे',
+      'डेटाबेसमध्ये माहिती साठवणे आणि एपीआय तयार करणे',
+      'प्लंबिंग पाईप फिटिंग आणि गळती दुरुस्ती करणे',
+    ],
+  };
+
+  const QUICK_TOOLS_BY_LANG: Record<string, string[]> = {
+    en: [
+      'VS Code', 'MySQL Workbench', 'Postman', 'Git', 'Docker', 'JDK',
+      'Digital Multimeter', 'Clamp Meter', 'Wire Strippers', 'Insulated Screwdrivers'
+    ],
+    hi: [
+      'डिजिटल मल्टीमीटर', 'वायर स्ट्रिपर', 'क्लैंप मीटर', 'टेस्टर', 'स्क्रूड्राइवर',
+      'वीएस कोड', 'पोस्टकैन', 'गिट (Git)', 'ड्रिल मशीन'
+    ],
+    mr: [
+      'डिजिटल मल्टीमीटर', 'वायर स्ट्रिपर', 'क्लॅम्प मीटर', 'टेस्टर', 'स्क्रू ड्रायव्हर',
+      'व्हीएस कोड', 'पोस्टमन', 'ड्रिल मशीन'
+    ],
+  };
+
+  const QUICK_SKILLS_BY_LANG: Record<string, string[]> = {
+    en: [
+      'Angular', 'Java', 'Spring Boot', 'MySQL', 'REST APIs', 'Docker', 'HTML5/CSS3',
+      'Solar PV Installation', 'Electrical Safety', 'Circuit Wiring', 'Grounding/Earthing'
+    ],
+    hi: [
+      'सोलर पीवी इंस्टॉलेशन', 'सर्किट वायरिंग', 'विद्युत सुरक्षा व अर्थिंग',
+      'वेब डेवलपमेंट', 'स्प्रिंग बूट', 'मायएसक्यूएल', 'पाइपलाइन प्लंबिंग'
+    ],
+    mr: [
+      'सोलर पीव्ही इन्स्टॉलेशन', 'सर्किट वायरिंग', 'विद्युत सुरक्षा',
+      'वेब डिझाईन', 'डेटाबेस व्यवस्थापन', 'प्लंबिंग पाईप फिटिंग'
+    ],
+  };
+
+  const quickTasks = QUICK_TASKS_BY_LANG[language] || QUICK_TASKS_BY_LANG.en;
+  const quickTools = QUICK_TOOLS_BY_LANG[language] || QUICK_TOOLS_BY_LANG.en;
+  const quickSkills = QUICK_SKILLS_BY_LANG[language] || QUICK_SKILLS_BY_LANG.en;
+
+  // Reusable Voice Dictation Button component
+  const VoiceButton: React.FC<{ fieldName: string }> = ({ fieldName }) => {
+    const isFieldListening = isListening && activeVoiceField === fieldName;
+    return (
+      <button
+        type="button"
+        onClick={() => toggleVoice(fieldName)}
+        title={isFieldListening ? t('voice.stop') : t('voice.start')}
+        className={`px-3 py-2 rounded-lg border text-xs font-semibold flex items-center space-x-1.5 transition flex-shrink-0 ${
+          isFieldListening
+            ? 'bg-red-50 text-red-700 border-red-300 animate-pulse ring-2 ring-red-400'
+            : 'bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 border-slate-300'
+        }`}
+      >
+        {isFieldListening ? (
+          <>
+            <MicOff className="w-4 h-4 text-red-600 animate-spin" />
+            <span className="font-semibold text-red-600">{t('voice.stop')}</span>
+          </>
+        ) : (
+          <>
+            <Mic className="w-4 h-4 text-indigo-600" />
+            <span className="hidden sm:inline">{t('voice.start')}</span>
+          </>
+        )}
+      </button>
+    );
+  };
 
   // 1. Load existing profile from backend or offline draft
   useEffect(() => {
@@ -183,13 +296,19 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
             <FileText className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">Worker Skill Passport & Self-Declaration</h1>
+            <h1 className="text-xl font-bold text-slate-900">{t('profile.title')}</h1>
             <p className="text-xs text-slate-500">
-              Document your trade experience acquired informally without formal degrees. 
-              Changes are continuously auto-saved locally and survive page reloads.
+              {t('profile.subtitle')}
             </p>
           </div>
         </div>
+
+        {voiceError && (
+          <div className="mt-3 p-3 rounded-lg text-xs flex items-center space-x-2 bg-amber-50 text-amber-800 border border-amber-200">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <span>{voiceError}</span>
+          </div>
+        )}
 
         {statusMsg && (
           <div className={`mt-4 p-3.5 rounded-lg text-sm flex items-center space-x-2 border ${
@@ -208,27 +327,30 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center space-x-2">
             <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">1</span>
-            <span>Current Trade & Experience</span>
+            <span>{t('profile.step1')}</span>
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
-                Your Occupation / Job Title *
+                {t('profile.occupation')}
               </label>
-              <input
-                type="text"
-                required
-                value={occupationTitle}
-                onChange={(e) => setOccupationTitle(e.target.value)}
-                placeholder="e.g. Full Stack Developer, Electrician, Plumber"
-                className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-              />
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  required
+                  value={occupationTitle}
+                  onChange={(e) => setOccupationTitle(e.target.value)}
+                  placeholder={t('profile.occupationPlaceholder')}
+                  className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                />
+                <VoiceButton fieldName="occupation" />
+              </div>
             </div>
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
-                Total Years of On-the-Job Experience
+                {t('profile.expYears')}
               </label>
               <input
                 type="number"
@@ -245,20 +367,20 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
-                Current Workplace / Employer / Freelance
+                {t('profile.workplace')}
               </label>
               <input
                 type="text"
                 value={currentWorkplace}
                 onChange={(e) => setCurrentWorkplace(e.target.value)}
-                placeholder="e.g. Local IT Solutions, Self-Employed"
+                placeholder={t('profile.workplacePlaceholder')}
                 className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm"
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
-                Formal Education Level
+                {t('profile.education')}
               </label>
               <select
                 value={educationLevel}
@@ -280,10 +402,10 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center space-x-2">
             <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">2</span>
-            <span>Practical Tasks Performed Daily</span>
+            <span>{t('profile.step2')}</span>
           </h2>
           <p className="text-xs text-slate-500">
-            Describe what you actually do on the job. The AI matching engine cross-references these with official NSQF Performance Criteria.
+            {t('profile.tasksDesc')}
           </p>
 
           <div className="flex gap-2">
@@ -292,31 +414,32 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
               value={taskInput}
               onChange={(e) => setTaskInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addItem(dailyTasks, setDailyTasks, taskInput, () => setTaskInput('')))}
-              placeholder="e.g. Build backend API endpoints using Spring Boot"
+              placeholder={t('profile.taskPlaceholder')}
               className="flex-1 px-3.5 py-2 border border-slate-300 rounded-lg text-sm"
             />
+            <VoiceButton fieldName="task" />
             <button
               type="button"
               onClick={() => addItem(dailyTasks, setDailyTasks, taskInput, () => setTaskInput(''))}
               className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-sm font-medium transition flex items-center space-x-1"
             >
               <Plus className="w-4 h-4" />
-              <span>Add</span>
+              <span>{t('profile.add')}</span>
             </button>
           </div>
 
           {/* Quick chips */}
           <div>
-            <div className="text-[11px] font-semibold uppercase text-slate-400 mb-1.5">Common Tasks for Full Stack & Electrical:</div>
+            <div className="text-[11px] font-semibold uppercase text-slate-400 mb-1.5">{t('profile.commonTasks')}</div>
             <div className="flex flex-wrap gap-1.5">
-              {QUICK_TASKS.map((t, idx) => (
+              {quickTasks.map((tItem, idx) => (
                 <button
                   key={idx}
                   type="button"
-                  onClick={() => addItem(dailyTasks, setDailyTasks, t, () => {})}
+                  onClick={() => addItem(dailyTasks, setDailyTasks, tItem, () => {})}
                   className="px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 rounded-full text-xs transition border border-slate-200"
                 >
-                  + {t}
+                  + {tItem}
                 </button>
               ))}
             </div>
@@ -343,7 +466,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center space-x-2">
             <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">3</span>
-            <span>Tools & Software Utilized</span>
+            <span>{t('profile.step3')}</span>
           </h2>
 
           <div className="flex gap-2">
@@ -352,30 +475,34 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
               value={toolInput}
               onChange={(e) => setToolInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addItem(toolsUsed, setToolsUsed, toolInput, () => setToolInput('')))}
-              placeholder="e.g. VS Code, Docker, MySQL Workbench"
+              placeholder={t('profile.toolPlaceholder')}
               className="flex-1 px-3.5 py-2 border border-slate-300 rounded-lg text-sm"
             />
+            <VoiceButton fieldName="tool" />
             <button
               type="button"
               onClick={() => addItem(toolsUsed, setToolsUsed, toolInput, () => setToolInput(''))}
               className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-sm font-medium transition flex items-center space-x-1"
             >
               <Plus className="w-4 h-4" />
-              <span>Add</span>
+              <span>{t('profile.add')}</span>
             </button>
           </div>
 
-          <div className="flex flex-wrap gap-1.5">
-            {QUICK_TOOLS.map((tool, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => addItem(toolsUsed, setToolsUsed, tool, () => {})}
-                className="px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 rounded-full text-xs transition border border-slate-200"
-              >
-                + {tool}
-              </button>
-            ))}
+          <div>
+            <div className="text-[11px] font-semibold uppercase text-slate-400 mb-1.5">{t('profile.commonTools')}</div>
+            <div className="flex flex-wrap gap-1.5">
+              {quickTools.map((tool, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => addItem(toolsUsed, setToolsUsed, tool, () => {})}
+                  className="px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 rounded-full text-xs transition border border-slate-200"
+                >
+                  + {tool}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-2 mt-2">
@@ -398,7 +525,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center space-x-2">
             <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">4</span>
-            <span>Acquired Skills & Learning Background</span>
+            <span>{t('profile.step4')}</span>
           </h2>
 
           <div className="flex gap-2">
@@ -407,30 +534,34 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
               value={skillInput}
               onChange={(e) => setSkillInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addItem(skillsDeclared, setSkillsDeclared, skillInput, () => setSkillInput('')))}
-              placeholder="e.g. Angular, Spring Boot, MySQL"
+              placeholder={t('profile.skillPlaceholder')}
               className="flex-1 px-3.5 py-2 border border-slate-300 rounded-lg text-sm"
             />
+            <VoiceButton fieldName="skill" />
             <button
               type="button"
               onClick={() => addItem(skillsDeclared, setSkillsDeclared, skillInput, () => setSkillInput(''))}
               className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-sm font-medium transition flex items-center space-x-1"
             >
               <Plus className="w-4 h-4" />
-              <span>Add</span>
+              <span>{t('profile.add')}</span>
             </button>
           </div>
 
-          <div className="flex flex-wrap gap-1.5">
-            {QUICK_SKILLS.map((sk, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => addItem(skillsDeclared, setSkillsDeclared, sk, () => {})}
-                className="px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 rounded-full text-xs transition border border-slate-200"
-              >
-                + {sk}
-              </button>
-            ))}
+          <div>
+            <div className="text-[11px] font-semibold uppercase text-slate-400 mb-1.5">{t('profile.commonSkills')}</div>
+            <div className="flex flex-wrap gap-1.5">
+              {quickSkills.map((sk, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => addItem(skillsDeclared, setSkillsDeclared, sk, () => {})}
+                  className="px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 rounded-full text-xs transition border border-slate-200"
+                >
+                  + {sk}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-2 mt-2">
@@ -448,15 +579,18 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
             ))}
           </div>
 
-          <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 mb-1">
-              How did you learn your trade? (Informal background / Apprenticeship)
-            </label>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+                {t('profile.informalLearning')}
+              </label>
+              <VoiceButton fieldName="informal" />
+            </div>
             <textarea
               rows={3}
               value={informalTrainingDesc}
               onChange={(e) => setInformalTrainingDesc(e.target.value)}
-              placeholder="e.g. Started as a junior apprentice 3 years ago; learned by delivering real client projects and fixing production bugs."
+              placeholder={t('profile.informalPlaceholder')}
               className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm"
             />
           </div>
@@ -466,7 +600,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
           <div className="text-xs text-slate-500 flex items-center space-x-1.5">
             <Save className="w-4 h-4 text-emerald-600" />
-            <span>Local draft automatically preserved across page reloads.</span>
+            <span>{t('profile.draftSaved')}</span>
           </div>
 
           <div className="flex items-center space-x-3 w-full sm:w-auto">
@@ -475,7 +609,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
               onClick={() => onNavigate('worker-dashboard')}
               className="px-4 py-2.5 border border-slate-300 text-slate-700 rounded-lg text-sm font-semibold hover:bg-slate-50 transition w-full sm:w-auto"
             >
-              Cancel
+              {t('profile.cancel')}
             </button>
             <button
               type="submit"
@@ -483,7 +617,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
               className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-md transition disabled:opacity-50 flex items-center justify-center space-x-2 w-full sm:w-auto"
             >
               <Sparkles className="w-4 h-4 text-amber-300" />
-              <span>{isSubmitting ? 'Submitting & Matching...' : 'Submit & Find NSQF Qualifications'}</span>
+              <span>{isSubmitting ? t('profile.submitting') : t('profile.submit')}</span>
             </button>
           </div>
         </div>

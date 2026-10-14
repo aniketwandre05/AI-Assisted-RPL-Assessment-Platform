@@ -28,16 +28,69 @@ class MatchingEngine:
         "good", "well", "performing", "understanding", "different", "etc", "junior", "senior"
     }
 
-    @staticmethod
-    def extract_skill_terms(text: str) -> List[str]:
+    INDIC_VOCATIONAL_MAP = {
+        # IT & Development (Hindi / Marathi)
+        "वेब डेवलपर": "web developer full stack frontend backend",
+        "वेब डेव्हलपर": "web developer full stack frontend backend",
+        "सॉफ्टवेयर": "software developer programming",
+        "सॉफ्टवेअर": "software developer programming",
+        "कोडिंग": "coding programming software",
+        "डेटाबेस": "database mysql sql queries",
+        
+        # Electrical & Electronics
+        "इलेक्ट्रीशियन": "electrician electrical wiring circuit",
+        "इलेक्ट्रिशियन": "electrician electrical wiring circuit",
+        "वायरिंग": "wiring electrical cable circuit",
+        "मीटर": "multimeter meter testing voltage",
+        "मल्टीमीटर": "multimeter digital multimeter testing voltage",
+        "सर्किट": "circuit breaker mcb switchboard",
+        "विद्युत": "electrical electrician wiring",
+        "मोटर": "motor pump rewinding electrical",
+        
+        # Solar & Green Energy
+        "सोलर": "solar pv panel rooftop installation",
+        "सौर ऊर्जा": "solar pv panel installation green energy",
+        "सौर पॅनेल": "solar pv panel rooftop installation",
+        "सोलर पैनल": "solar pv panel rooftop installation",
+        
+        # Construction, Plumbing & Mechanical Trades
+        "प्लंबर": "plumber plumbing piping sanitary fittings",
+        "प्लंबिंग": "plumbing pipes repair water connection",
+        "नळ": "plumbing pipe tap water fitting",
+        "नल": "plumbing pipe tap water fitting",
+        "वेल्डर": "welder welding metal fabrication arc gas",
+        "वेल्डिंग": "welding metal fabrication arc",
+        "कारपेंटर": "carpenter woodwork furniture joinery",
+        "सुतार": "carpenter woodwork furniture joinery",
+        "मेसन": "mason masonry brickwork plastering tile",
+        "गवंडी": "mason masonry construction bricklayer",
+        "बांधकाम": "construction masonry building",
+    }
+
+    @classmethod
+    def normalize_indic_text(cls, text: str) -> str:
+        """
+        Translates and expands Indic (Hindi / Marathi) vocational terms into normalized
+        English NSQF domain terminology to enable zero-barrier grassroots matching.
+        """
+        if not text:
+            return ""
+        expanded = [text]
+        for indic_term, en_mapping in cls.INDIC_VOCATIONAL_MAP.items():
+            if indic_term in text:
+                expanded.append(en_mapping)
+        return " ".join(expanded)
+
+    @classmethod
+    def extract_skill_terms(cls, text: str) -> List[str]:
         if not text:
             return []
         
-        tokens = re.findall(r'[a-zA-Z0-9#\+\.\-]+', text)
+        tokens = re.findall(r'[\w#\+\.\-]+', text, re.UNICODE)
         cleaned = []
         for t in tokens:
             t_clean = t.strip('.,;:-_').lower()
-            if len(t_clean) >= 2 and t_clean not in MatchingEngine.STOPWORDS:
+            if len(t_clean) >= 2 and t_clean not in cls.STOPWORDS:
                 cleaned.append(t_clean)
         
         phrases = []
@@ -50,6 +103,11 @@ class MatchingEngine:
         for kp in known_phrases:
             if kp in text_lower:
                 phrases.append(kp)
+
+        # Append normalized Indic keywords
+        for indic_term, en_mapping in cls.INDIC_VOCATIONAL_MAP.items():
+            if indic_term in text:
+                phrases.extend(en_mapping.split()[:2])
 
         combined = list(dict.fromkeys(phrases + cleaned))
         return combined[:20]
@@ -139,11 +197,16 @@ class MatchingEngine:
                 "reason": "Worker self-declaration is too brief to identify trade competencies."
             }
 
-        w_title_words = set(re.findall(r'[a-zA-Z0-9]+', profile.occupation_title.lower())) - cls.STOPWORDS
+        normalized_worker_text = cls.normalize_indic_text(worker_text)
+        w_title_words = set(re.findall(r'[\w]+', cls.normalize_indic_text(profile.occupation_title).lower(), re.UNICODE)) - cls.STOPWORDS
         worker_skills_lower = [s.lower() for s in (skills + tools + tasks)]
+        for s in list(worker_skills_lower):
+            mapped = cls.normalize_indic_text(s)
+            if mapped != s:
+                worker_skills_lower.extend(mapped.lower().split())
 
         # TF-IDF corpus
-        corpus = [worker_text]
+        corpus = [normalized_worker_text]
         qual_texts = []
         for q in qualifications:
             q_text_parts = [
