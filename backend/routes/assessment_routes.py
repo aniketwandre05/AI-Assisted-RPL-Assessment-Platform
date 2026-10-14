@@ -5,6 +5,7 @@ from backend.models.user import User
 from backend.models.qualification import Qualification, PerformanceCriterion
 from backend.models.assessment import AssessmentSession, CriterionScore, AssessmentEvidence, AuditLog
 from backend.scoring_engine import ScoringEngine
+from backend.ai_evidence_inspector import AiEvidenceInspector
 from backend.auth_middleware import jwt_required, role_required
 
 assessment_bp = Blueprint("assessment_bp", __name__)
@@ -189,13 +190,32 @@ def add_evidence(session_id: str):
     if not title:
         return jsonify({"error": "title is required"}), 400
 
+    criterion_text = None
+    if criterion_id:
+        crit = db.session.get(PerformanceCriterion, criterion_id)
+        if crit:
+            criterion_text = crit.criterion_text
+
+    # Run AI Computer Vision & Evidence Inspector Co-Pilot
+    inspection = AiEvidenceInspector.inspect(
+        evidence_type=evidence_type,
+        title=title,
+        external_url=external_url,
+        criterion_text=criterion_text
+    )
+
     evidence = AssessmentEvidence(
         session_id=session.id,
         criterion_id=criterion_id,
         uploaded_by_id=current_user.id,
         evidence_type=evidence_type,
         title=title,
-        external_url=external_url
+        external_url=external_url,
+        ai_verification_status=inspection["status"],
+        ai_confidence_score=inspection["confidence_score"],
+        ai_analysis_tags=json.dumps(inspection["detected_tags"]),
+        ai_summary=inspection["summary"],
+        ai_suggested_rubric=inspection["suggested_rubric_level"]
     )
     db.session.add(evidence)
     db.session.commit()
@@ -204,9 +224,43 @@ def add_evidence(session_id: str):
     ScoringEngine.calculate_session_scores(session)
 
     return jsonify({
-        "message": "Evidence recorded successfully",
-        "evidence": evidence.to_dict()
+        "message": "Evidence recorded and AI-inspected successfully",
+        "evidence": evidence.to_dict(),
+        "ai_inspection": inspection
     }), 201
+
+@assessment_bp.route("/evidence/<string:evidence_id>/inspect", methods=["POST"])
+@jwt_required
+def inspect_evidence(evidence_id: str):
+    evidence = db.session.get(AssessmentEvidence, evidence_id)
+    if not evidence:
+        return jsonify({"error": "Evidence not found"}), 404
+
+    criterion_text = None
+    if evidence.criterion_id:
+        crit = db.session.get(PerformanceCriterion, evidence.criterion_id)
+        if crit:
+            criterion_text = crit.criterion_text
+
+    inspection = AiEvidenceInspector.inspect(
+        evidence_type=evidence.evidence_type,
+        title=evidence.title,
+        external_url=evidence.external_url,
+        criterion_text=criterion_text
+    )
+
+    evidence.ai_verification_status = inspection["status"]
+    evidence.ai_confidence_score = inspection["confidence_score"]
+    evidence.ai_analysis_tags = json.dumps(inspection["detected_tags"])
+    evidence.ai_summary = inspection["summary"]
+    evidence.ai_suggested_rubric = inspection["suggested_rubric_level"]
+    db.session.commit()
+
+    return jsonify({
+        "message": "AI Computer Vision evidence inspection completed",
+        "evidence": evidence.to_dict(),
+        "ai_inspection": inspection
+    }), 200
 
 @assessment_bp.route("/sessions/<string:session_id>/calculate", methods=["POST"])
 @jwt_required

@@ -7,8 +7,10 @@ import {
   Qualification, 
   CriterionScore, 
   NationalOccupationalStandard,
-  PerformanceCriterion 
+  PerformanceCriterion,
+  AssessmentEvidence 
 } from '../types';
+import { AiEvidenceInspector } from '../components/AiEvidenceInspector';
 import { 
   CheckSquare, 
   Award, 
@@ -21,7 +23,9 @@ import {
   FileText, 
   ShieldCheck, 
   Video, 
-  ExternalLink 
+  ExternalLink,
+  Sparkles,
+  Cpu 
 } from 'lucide-react';
 
 interface AssessmentSessionProps {
@@ -182,6 +186,16 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
     } catch (err: any) {
       alert(err.message || 'Error attaching evidence');
     }
+  };
+
+  const handleEvidenceUpdated = (updatedEvidence: AssessmentEvidence) => {
+    setSession((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        evidence_files: prev.evidence_files?.map((ev) => (ev.id === updatedEvidence.id ? updatedEvidence : ev)) || [],
+      };
+    });
   };
 
   // 5. Finalize decision
@@ -427,17 +441,34 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
                         </p>
                       </div>
 
-                      {/* Evidence Button */}
-                      <div className="flex items-center space-x-2">
+                      {/* Evidence Button & AI Inspector Indicator */}
+                      <div className="flex flex-wrap items-center gap-2">
                         {hasEvidence ? (
-                          <button
-                            type="button"
-                            onClick={() => setEvidenceModalCritId(pc.id)}
-                            className="inline-flex items-center px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-md border border-emerald-300 transition shadow-xs"
-                            title="Click to review or add more evidence files"
-                          >
-                            <CheckCircle2 className="w-3 h-3 mr-1 text-emerald-600" /> Evidence Attached (View/Add)
-                          </button>
+                          <>
+                            {(() => {
+                              const evItem = session.evidence_files?.find((ev) => ev.criterion_id === pc.id);
+                              const ai = evItem?.ai_analysis;
+                              if (!ai) return null;
+                              return (
+                                <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold border shadow-2xs ${
+                                  ai.status === 'FLAGGED_ANOMALY'
+                                    ? 'bg-rose-50 text-rose-700 border-rose-300'
+                                    : 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                                }`}>
+                                  <Sparkles className="w-3 h-3 mr-1 text-amber-500" />
+                                  <span>AI Inspected ({Math.round(ai.confidence_score * 100)}%)</span>
+                                </span>
+                              );
+                            })()}
+                            <button
+                              type="button"
+                              onClick={() => setEvidenceModalCritId(pc.id)}
+                              className="inline-flex items-center px-2.5 py-1 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-semibold rounded-md border border-emerald-300 transition shadow-xs"
+                              title="Click to review AI vision analysis or add more evidence files"
+                            >
+                              <CheckCircle2 className="w-3 h-3 mr-1 text-emerald-600" /> Evidence Attached (View/Add)
+                            </button>
+                          </>
                         ) : (
                           <button
                             type="button"
@@ -584,38 +615,52 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
       {/* Attach Evidence Modal */}
       {evidenceModalCritId && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+          <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
             <h3 className="text-base font-bold text-slate-900 flex items-center space-x-2">
               <Upload className="w-5 h-5 text-indigo-600" />
-              <span>Attach Permitted Practical Evidence</span>
+              <span>Attach Permitted Practical Evidence & AI Vision Audit</span>
             </h3>
             <p className="text-xs text-slate-500">
-              Per Page 6 mandate, video recordings are required for all hands-on practical assessments.
+              Per NCVET mandate, practical video recordings and artifacts are subject to AI Computer Vision audit telemetry.
             </p>
 
-            {/* List any already attached evidence for this criterion */}
+            {/* List any already attached evidence with full AI Vision Inspector card */}
             {(() => {
               const attached = session.evidence_files?.filter((ev) => ev.criterion_id === evidenceModalCritId) || [];
               if (attached.length === 0) return null;
               return (
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
-                  <span className="text-[11px] font-bold uppercase text-slate-500 block">Existing Evidence on File ({attached.length}):</span>
-                  <div className="space-y-1.5 max-h-36 overflow-y-auto">
+                <div className="space-y-3">
+                  <span className="text-[11px] font-bold uppercase text-slate-600 block">
+                    Verified Evidence on File ({attached.length}):
+                  </span>
+                  <div className="space-y-3">
                     {attached.map((ev) => (
-                      <div key={ev.id} className="flex items-center justify-between text-xs bg-white p-2 rounded-lg border border-slate-200">
-                        <span className="font-medium text-slate-800 truncate mr-2">[{ev.evidence_type}] {ev.title}</span>
-                        {ev.external_url ? (
-                          <a
-                            href={ev.external_url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="text-indigo-600 hover:text-indigo-800 underline shrink-0 text-[11px]"
-                          >
-                            Open File
-                          </a>
-                        ) : (
-                          <span className="text-slate-400 text-[10px]">Saved</span>
-                        )}
+                      <div key={ev.id} className="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-semibold text-slate-900 truncate">
+                            [{ev.evidence_type.toUpperCase()}] {ev.title}
+                          </span>
+                          {ev.external_url ? (
+                            <a
+                              href={ev.external_url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-indigo-600 hover:text-indigo-800 underline font-medium text-[11px] flex items-center space-x-1"
+                            >
+                              <span>View Media</span>
+                              <ExternalLink className="w-3 h-3" />
+                            </a>
+                          ) : (
+                            <span className="text-slate-400 text-[10px]">Saved</span>
+                          )}
+                        </div>
+
+                        {/* AI Evidence Inspector Widget Card */}
+                        <AiEvidenceInspector
+                          evidence={ev}
+                          onApplyRubric={(lvl) => updateCriterionScore(evidenceModalCritId!, lvl)}
+                          onEvidenceUpdated={handleEvidenceUpdated}
+                        />
                       </div>
                     ))}
                   </div>
@@ -623,7 +668,8 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
               );
             })()}
 
-            <form onSubmit={handleAddEvidence} className="space-y-3">
+            <form onSubmit={handleAddEvidence} className="space-y-3 border-t border-slate-200 pt-3">
+              <span className="text-xs font-bold text-slate-800 block">Upload / Link Additional Evidence File:</span>
               <div>
                 <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">Evidence Type</label>
                 <select

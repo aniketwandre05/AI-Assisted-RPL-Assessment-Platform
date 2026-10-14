@@ -1,4 +1,4 @@
-import { User, WorkerProfile, Qualification, MatchingResult, AssessmentSession, CompetencyReport } from '../types';
+import { User, WorkerProfile, Qualification, MatchingResult, AssessmentSession, CompetencyReport, AssessmentEvidence, AiEvidenceAnalysis } from '../types';
 
 const API_BASE = '/api/v1';
 
@@ -112,11 +112,18 @@ export const api = {
         }
       ),
     addEvidence: (sessionId: string, payload: { evidence_type: string; title: string; external_url?: string; criterion_id?: string }) =>
-      request<{ evidence: any; message: string }>(
+      request<{ evidence: AssessmentEvidence; message: string; ai_inspection?: AiEvidenceAnalysis }>(
         `/assessments/sessions/${encodeURIComponent(sessionId)}/evidence`,
         {
           method: 'POST',
           body: JSON.stringify(payload),
+        }
+      ),
+    inspectEvidence: (evidenceId: string) =>
+      request<{ evidence: AssessmentEvidence; message: string; ai_inspection: AiEvidenceAnalysis }>(
+        `/assessments/evidence/${encodeURIComponent(evidenceId)}/inspect`,
+        {
+          method: 'POST',
         }
       ),
     calculate: (sessionId: string) =>

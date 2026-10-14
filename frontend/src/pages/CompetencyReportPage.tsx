@@ -13,7 +13,8 @@ import {
   Building,
   BookOpen,
   Clock,
-  AlertTriangle 
+  AlertTriangle,
+  Sparkles 
 } from 'lucide-react';
 
 interface CompetencyReportProps {
@@ -251,20 +252,51 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
 
         {/* Evidence Manifest */}
         <div className="space-y-3">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">
-            Verified Practical Evidence Manifest
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">
+              Verified Practical Evidence Manifest
+            </h2>
+            <span className="text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 flex items-center space-x-1">
+              <Sparkles className="w-3 h-3 text-amber-500" />
+              <span>AI Vision Audited</span>
+            </span>
+          </div>
+
           {report.evidence_manifest.length === 0 ? (
             <p className="text-xs text-slate-500 italic">No external digital evidence files linked.</p>
           ) : (
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {report.evidence_manifest.map((ev, idx) => (
-                <div key={idx} className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs flex justify-between items-center">
-                  <div>
-                    <span className="font-semibold text-slate-800">• {ev.title}</span>
-                    <span className="text-slate-500 ml-2 uppercase font-mono">[{ev.evidence_type}]</span>
+                <div key={idx} className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1.5">
+                  <div className="flex flex-wrap justify-between items-center gap-2">
+                    <div>
+                      <span className="font-semibold text-slate-900">• {ev.title}</span>
+                      <span className="text-slate-500 ml-2 uppercase font-mono text-[11px]">[{ev.evidence_type}]</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      {ev.ai_analysis && (
+                        <span className={`inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold border ${
+                          ev.ai_analysis.status === 'FLAGGED_ANOMALY'
+                            ? 'bg-rose-100 text-rose-800 border-rose-300'
+                            : 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                        }`}>
+                          <Sparkles className="w-3 h-3 mr-1 text-amber-500" />
+                          {ev.ai_analysis.status === 'FLAGGED_ANOMALY' ? 'ANOMALY FLAGGED' : `AI VERIFIED (${Math.round(ev.ai_analysis.confidence_score * 100)}%)`}
+                        </span>
+                      )}
+                      <span className="text-[11px] text-slate-400">Attached: {ev.uploaded_at?.slice(0, 10)}</span>
+                    </div>
                   </div>
-                  <span className="text-[11px] text-slate-400">Attached: {ev.uploaded_at?.slice(0, 10)}</span>
+
+                  {ev.ai_analysis?.detected_tags && ev.ai_analysis.detected_tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pt-1">
+                      {ev.ai_analysis.detected_tags.map((tag: string, tIdx: number) => (
+                        <span key={tIdx} className="text-[10px] font-mono bg-white text-slate-700 px-1.5 py-0.5 rounded border border-slate-200">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

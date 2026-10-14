@@ -147,6 +147,13 @@ class AssessmentEvidence(db.Model):
     file_size_bytes: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     sha256_hash: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
     
+    # AI Computer Vision & Evidence Inspector Telemetry
+    ai_analysis_tags: Mapped[Optional[str]] = mapped_column(Text, nullable=True)  # JSON string of detected_tags
+    ai_verification_status: Mapped[Optional[str]] = mapped_column(String(50), nullable=True, default="PENDING")
+    ai_confidence_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True, default=0.0)
+    ai_summary: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    ai_suggested_rubric: Mapped[Optional[int]] = mapped_column(Integer, nullable=True, default=3)
+    
     uploaded_at: Mapped[datetime] = mapped_column(DateTime, default=utc_now)
 
     session = relationship("AssessmentSession", back_populates="evidence_files")
@@ -154,6 +161,24 @@ class AssessmentEvidence(db.Model):
     uploaded_by = relationship("User")
 
     def to_dict(self) -> Dict[str, Any]:
+        tags = []
+        if self.ai_analysis_tags:
+            try:
+                tags = json.loads(self.ai_analysis_tags)
+            except Exception:
+                tags = [self.ai_analysis_tags]
+
+        ai_analysis = None
+        if self.ai_verification_status and self.ai_verification_status != "PENDING":
+            ai_analysis = {
+                "status": self.ai_verification_status,
+                "confidence_score": self.ai_confidence_score or 0.90,
+                "detected_tags": tags,
+                "summary": self.ai_summary or "",
+                "suggested_rubric_level": self.ai_suggested_rubric or 3,
+                "inspected_at": self.uploaded_at.isoformat() if self.uploaded_at else None,
+            }
+
         return {
             "id": self.id,
             "session_id": self.session_id,
@@ -167,6 +192,7 @@ class AssessmentEvidence(db.Model):
             "file_size_bytes": self.file_size_bytes,
             "sha256_hash": self.sha256_hash,
             "uploaded_at": self.uploaded_at.isoformat() if self.uploaded_at else None,
+            "ai_analysis": ai_analysis,
         }
 
 

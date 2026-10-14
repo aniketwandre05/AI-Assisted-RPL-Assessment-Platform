@@ -186,6 +186,16 @@ export interface CriterionScore {
   has_evidence: boolean;
 }
 
+export interface AiEvidenceAnalysis {
+  status: 'VERIFIED_COMPLIANT' | 'NEEDS_HUMAN_REVIEW' | 'FLAGGED_ANOMALY' | string;
+  confidence_score: number;
+  detected_objects?: string[];
+  detected_tags: string[];
+  summary: string;
+  suggested_rubric_level: number;
+  inspected_at?: string;
+}
+
 export interface AssessmentEvidence {
   id: string;
   session_id: string;
@@ -197,6 +207,7 @@ export interface AssessmentEvidence {
   file_path?: string;
   external_url?: string;
   uploaded_at?: string;
+  ai_analysis?: AiEvidenceAnalysis | null;
 }
 
 export interface AssessmentSession {
