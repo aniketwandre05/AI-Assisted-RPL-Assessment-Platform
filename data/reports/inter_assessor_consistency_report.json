@@ -1,6 +1,6 @@
 {
-  "benchmark_id": "CONSISTENCY-BENCH-20261014-074958",
-  "evaluated_at": "2026-10-14T07:49:58.050217+00:00",
+  "benchmark_id": "CONSISTENCY-BENCH-20261014-181158",
+  "evaluated_at": "2026-10-14T18:11:58.102297+00:00",
   "methodology": "Two-way random effects model measuring inter-assessor agreement (ICC, Fleiss Kappa, Exact Agreement) across simulated candidate cohorts",
   "sample_size": {
     "num_candidates": 10,

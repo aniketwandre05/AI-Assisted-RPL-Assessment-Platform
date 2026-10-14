@@ -159,5 +159,7 @@ export const api = {
         };
         verification_timestamp: string;
       }>(`/assessments/verify/${encodeURIComponent(signatureHash)}`),
+    getAuditDossier: (format: 'json' | 'markdown' = 'json') =>
+      request<{ dossier: any; markdown?: string }>(`/assessments/audit/dossier?format=${format}`),
   },
 };
