@@ -51,7 +51,7 @@ def create_app(config_class=Config):
     def health_check():
         return jsonify({
             "status": "healthy",
-            "service": "AI-Assisted RPL Assessment Platform API",
+            "service": "SAKSHAM RPL Assessment Platform API",
             "version": "1.0.0"
         }), 200
 

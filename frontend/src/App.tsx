@@ -52,7 +52,7 @@ const AppContent: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-500">
         <div className="text-center">
           <div className="inline-block animate-spin w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full mb-3" />
-          <p className="font-medium text-sm">Initializing SkillAssess Platform...</p>
+          <p className="font-medium text-sm">Initializing SAKSHAM Platform...</p>
         </div>
       </div>
     );
@@ -107,7 +107,7 @@ const AppContent: React.FC = () => {
       <footer className="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 no-print">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="text-center sm:text-left">
-            <span className="font-bold text-white block">AI-Assisted RPL Assessment Platform (SIH26242)</span>
+            <span className="font-bold text-white block">SAKSHAM - RPL Assessment Platform (SIH26242)</span>
             <span>Developed for Ministry of Skill Development and Entrepreneurship (MSDE) & NCVET</span>
           </div>
           <div className="flex items-center space-x-4 text-[11px]">

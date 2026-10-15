@@ -12,8 +12,8 @@ interface LanguageContextType {
 const translations: Record<Language, Record<string, string>> = {
   en: {
     // Navbar
-    'nav.brand': 'RPL SkillAssess',
-    'nav.subbrand': 'AI-Assisted NSQF Certification',
+    'nav.brand': 'SAKSHAM',
+    'nav.subbrand': 'RPL Skill Assessment Platform',
     'nav.home': 'Home',
     'nav.myDashboard': 'My Dashboard',
     'nav.skillDeclaration': 'Skill Declaration',
@@ -28,8 +28,8 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Landing Page
     'landing.badge': 'Ministry of Skill Development & Entrepreneurship (MSDE) • SIH26242',
-    'landing.heroTitle': 'AI-Assisted Skill Assessment Tool for',
-    'landing.heroHighlight': 'Recognition of Prior Learning (RPL)',
+    'landing.heroTitle': 'Recognition of Prior Learning with',
+    'landing.heroHighlight': 'SAKSHAM',
     'landing.heroDesc': "Empowering India's informal workforce to certify experiential on-the-job trade skills against official National Skills Qualification Framework (NSQF) standards. AI matches your skills with traceable criteria, while certified assessors maintain evaluation integrity.",
     'landing.registerWorker': 'Register as Worker',
     'landing.signInAccount': 'Sign In to Account',
@@ -37,7 +37,7 @@ const translations: Record<Language, Record<string, string>> = {
     'landing.workerRajesh': 'Worker (Rajesh Kumar)',
     'landing.assessorAnanya': 'Assessor (Dr. Ananya)',
     'landing.administrator': 'Administrator',
-    'landing.pillarsTitle': 'How the AI-Assisted RPL Assessment Operates',
+    'landing.pillarsTitle': 'How SAKSHAM Operates',
     'landing.pillarsDesc': 'Engineered to overcome manual assessment bottlenecks while strictly adhering to NCVET RPL Guidelines.',
 
     // Worker Profile / Self-Declaration
@@ -81,8 +81,8 @@ const translations: Record<Language, Record<string, string>> = {
   },
   hi: {
     // Navbar
-    'nav.brand': 'आरपीएल कौशल मूल्यांकन',
-    'nav.subbrand': 'एआई-सहायक एनएसक्यूएफ प्रमाणन',
+    'nav.brand': 'SAKSHAM',
+    'nav.subbrand': 'सक्षम आरपीएल कौशल मूल्यांकन मंच',
     'nav.home': 'होम',
     'nav.myDashboard': 'मेरा डैशबोर्ड',
     'nav.skillDeclaration': 'कौशल स्व-घोषणा',
@@ -97,8 +97,8 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Landing Page
     'landing.badge': 'कौशल विकास एवं उद्यमिता मंत्रालय (MSDE) • SIH26242',
-    'landing.heroTitle': 'पूर्व शिक्षण की मान्यता (RPL) के लिए',
-    'landing.heroHighlight': 'एआई-सहायक कौशल मूल्यांकन उपकरण',
+    'landing.heroTitle': 'पूर्व शिक्षण की मान्यता (RPL) मंच',
+    'landing.heroHighlight': 'सक्षम (SAKSHAM)',
     'landing.heroDesc': 'भारत के अनौपचारिक कार्यबल को राष्ट्रीय कौशल योग्यता फ्रेमवर्क (NSQF) मानकों के अनुरूप अपने कार्य अनुभव को प्रमाणित करने हेतु सशक्त बनाना। एआई पारदर्शी मानदंडों के साथ आपके कौशल का मिलान करता है।',
     'landing.registerWorker': 'श्रमिक के रूप में पंजीकरण करें',
     'landing.signInAccount': 'खाते में साइन इन करें',
@@ -106,7 +106,7 @@ const translations: Record<Language, Record<string, string>> = {
     'landing.workerRajesh': 'श्रमिक (राजेश कुमार)',
     'landing.assessorAnanya': 'मूल्यांकनकर्ता (डॉ. अनन्या)',
     'landing.administrator': 'व्यवस्थापक (एडमिन)',
-    'landing.pillarsTitle': 'एआई-सहायक आरपीएल मूल्यांकन कैसे कार्य करता है',
+    'landing.pillarsTitle': 'सक्षम (SAKSHAM) कैसे कार्य करता है',
     'landing.pillarsDesc': 'एनसीवीईटी आरपीएल दिशानिर्देशों का सख्ती से पालन करते हुए मैन्युअल मूल्यांकन की बाधाओं को दूर करने हेतु विकसित।',
 
     // Worker Profile / Self-Declaration
@@ -150,8 +150,8 @@ const translations: Record<Language, Record<string, string>> = {
   },
   mr: {
     // Navbar
-    'nav.brand': 'आरपीएल कौशल्य मूल्यांकन',
-    'nav.subbrand': 'एआय-सहाय्यित एनएसक्यूएफ प्रमाणीकरण',
+    'nav.brand': 'SAKSHAM',
+    'nav.subbrand': 'सक्षम आरपीएल कौशल्य मूल्यांकन मंच',
     'nav.home': 'मुख्यपृष्ठ',
     'nav.myDashboard': 'माझे डॅशबोर्ड',
     'nav.skillDeclaration': 'कौशल्य स्व-घोषणा',
@@ -166,8 +166,8 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Landing Page
     'landing.badge': 'कौशल्य विकास आणि उद्योजकता मंत्रालय (MSDE) • SIH26242',
-    'landing.heroTitle': 'पूर्व शिक्षणाची मान्यता (RPL) साठी',
-    'landing.heroHighlight': 'एआय-सहाय्यित कौशल्य मूल्यांकन साधन',
+    'landing.heroTitle': 'पूर्व शिक्षणाची मान्यता (RPL) मंच',
+    'landing.heroHighlight': 'सक्षम (SAKSHAM)',
     'landing.heroDesc': 'भारतातील अनौपचारिक कामगारांना राष्ट्रीय कौशल्य पात्रता फ्रेमवर्क (NSQF) मानकांनुसार त्यांच्या अनुभवाचे प्रमाणीकरण करण्यासाठी सक्षम करणे. एआय तुमच्या कौशल्यांचे अधिकृत निकषांशी पारदर्शकपणे जुळवणी करते.',
     'landing.registerWorker': 'कामगार म्हणून नोंदणी करा',
     'landing.signInAccount': 'खात्यात साइन इन करा',
@@ -175,7 +175,7 @@ const translations: Record<Language, Record<string, string>> = {
     'landing.workerRajesh': 'कामगार (राजेश कुमार)',
     'landing.assessorAnanya': 'मूल्यांकनकर्ता (डॉ. अनन्या)',
     'landing.administrator': 'प्रशासक (एडमिन)',
-    'landing.pillarsTitle': 'एआय-सहाय्यित आरपीएल मूल्यांकन कसे कार्य करते',
+    'landing.pillarsTitle': 'सक्षम (SAKSHAM) कसे कार्य करते',
     'landing.pillarsDesc': 'एनसीव्हीईटी आरपीएल मार्गदर्शक तत्त्वांचे काटेकोरपणे पालन करून मॅन्युअल मूल्यांकनातील अडचणी सोडवण्यासाठी विकसित केले आहे.',
 
     // Worker Profile / Self-Declaration

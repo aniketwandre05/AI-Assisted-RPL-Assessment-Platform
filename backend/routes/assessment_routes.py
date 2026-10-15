@@ -484,7 +484,7 @@ def get_audit_dossier():
     dossier = {
         "dossier_id": f"NCVET-AUDIT-DOSSIER-{utc_now().strftime('%Y%m%d%H%M%S')}",
         "governing_authority": "Ministry of Skill Development & Entrepreneurship (MSDE) / NCVET",
-        "platform_title": "AI-Assisted Skill Assessment Tool for Recognition of Prior Learning (RPL)",
+        "platform_title": "SAKSHAM - RPL Skill Assessment Platform",
         "problem_statement": "SIH26242",
         "generated_at": utc_now().isoformat(),
         "exported_by": {

@@ -1,12 +1,12 @@
-# AI-Assisted Skill Assessment Tool for Recognition of Prior Learning (RPL)
+# SAKSHAM: RPL Skill Assessment Platform
 
 [![SIH Problem Statement](https://img.shields.io/badge/SIH%202026-SIH26242-blue)](https://www.sih.gov.in/)
 [![Ministry](https://img.shields.io/badge/Ministry-MSDE%20%2F%20NCVET-orange)](https://www.msde.gov.in/)
 [![Theme](https://img.shields.io/badge/Theme-Smart%20Education-green)]()
 [![NSQF Level](https://img.shields.io/badge/NSQF%20Aligned-Level%204.5-purple)]()
-[![Tests](https://img.shields.io/badge/pytest-16%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/pytest-40%20passed-brightgreen)]()
 
-An end-to-end, offline-capable digital platform developed for **Smart India Hackathon (SIH) Problem Statement SIH26242**: *AI-Assisted Skill Assessment Tool for Recognition of Prior Learning (RPL)*, under the **Ministry of Skill Development and Entrepreneurship (MSDE)**.
+**SAKSHAM** (सक्षम) is an end-to-end, offline-capable digital platform developed for **Smart India Hackathon (SIH) Problem Statement SIH26242**: *Recognition of Prior Learning (RPL)*, under the **Ministry of Skill Development and Entrepreneurship (MSDE)**.
 
 ---
 

@@ -1,6 +1,6 @@
 {
-  "name": "RPL SkillAssess - AI-Assisted Skill Assessment Tool",
-  "short_name": "RPL SkillAssess",
+  "name": "SAKSHAM - RPL Skill Assessment Platform",
+  "short_name": "SAKSHAM",
   "description": "Offline-capable skill assessment and qualification matching for Recognition of Prior Learning (RPL)",
   "start_url": "/",
   "display": "standalone",

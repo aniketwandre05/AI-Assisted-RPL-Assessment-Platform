@@ -53,7 +53,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
           <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-3">
             <LogIn className="w-6 h-6" />
           </div>
-          <h2 className="text-2xl font-bold text-slate-900">Sign in to RPL SkillAssess</h2>
+          <h2 className="text-2xl font-bold text-slate-900">Sign in to SAKSHAM</h2>
           <p className="mt-1 text-sm text-slate-500">Access your skill profile, checklists, or assessment queue</p>
         </div>
 
