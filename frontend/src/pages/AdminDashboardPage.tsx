@@ -5,17 +5,13 @@ import {
   ShieldCheck, 
   Database, 
   FileText, 
-  Layers, 
   Search, 
-  AlertCircle, 
   BarChart3, 
   CheckCircle2, 
   RefreshCw,
   Download,
-  Check,
   Lock,
   ScrollText,
-  Sparkles,
   X 
 } from 'lucide-react';
 

@@ -5,27 +5,20 @@ import { offlineStorage } from '../services/offlineStorage';
 import { 
   AssessmentSession, 
   Qualification, 
-  CriterionScore, 
-  NationalOccupationalStandard,
-  PerformanceCriterion,
   AssessmentEvidence 
 } from '../types';
 import { AiEvidenceInspector } from '../components/AiEvidenceInspector';
 import { 
-  CheckSquare, 
-  Award, 
   CheckCircle2, 
   AlertTriangle, 
   Upload, 
-  Lock, 
   Save, 
   ArrowLeft, 
   FileText, 
   ShieldCheck, 
-  Video, 
   ExternalLink,
   Sparkles,
-  Cpu 
+  Lock 
 } from 'lucide-react';
 
 interface AssessmentSessionProps {

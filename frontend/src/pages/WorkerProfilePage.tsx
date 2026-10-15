@@ -141,8 +141,8 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
   const quickTools = QUICK_TOOLS_BY_LANG[language] || QUICK_TOOLS_BY_LANG.en;
   const quickSkills = QUICK_SKILLS_BY_LANG[language] || QUICK_SKILLS_BY_LANG.en;
 
-  // Reusable Voice Dictation Button component
-  const VoiceButton: React.FC<{ fieldName: string }> = ({ fieldName }) => {
+  // Reusable Voice Dictation Button renderer
+  const renderVoiceButton = (fieldName: string) => {
     const isFieldListening = isListening && activeVoiceField === fieldName;
     return (
       <button
@@ -170,6 +170,17 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
     );
   };
 
+  const populateFields = (data: any) => {
+    setOccupationTitle(data.occupation_title || '');
+    setExperienceYears(data.experience_years || 1.0);
+    setCurrentWorkplace(data.current_workplace || '');
+    setEducationLevel(data.education_level || '12th Grade');
+    setDailyTasks(data.daily_tasks || []);
+    setToolsUsed(data.tools_used || []);
+    setSkillsDeclared(data.skills_declared || []);
+    setInformalTrainingDesc(data.informal_training_desc || '');
+  };
+
   // 1. Load existing profile from backend or offline draft
   useEffect(() => {
     const loadProfile = async () => {
@@ -193,17 +204,6 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
     };
     loadProfile();
   }, []);
-
-  const populateFields = (data: any) => {
-    setOccupationTitle(data.occupation_title || '');
-    setExperienceYears(data.experience_years || 1.0);
-    setCurrentWorkplace(data.current_workplace || '');
-    setEducationLevel(data.education_level || '12th Grade');
-    setDailyTasks(data.daily_tasks || []);
-    setToolsUsed(data.tools_used || []);
-    setSkillsDeclared(data.skills_declared || []);
-    setInformalTrainingDesc(data.informal_training_desc || '');
-  };
 
   // 2. Auto-save local draft on changes (Survives Offline Page Refresh)
   useEffect(() => {
@@ -344,7 +344,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
                   placeholder={t('profile.occupationPlaceholder')}
                   className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700"
                 />
-                <VoiceButton fieldName="occupation" />
+                {renderVoiceButton('occupation')}
               </div>
             </div>
 
@@ -417,7 +417,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
               placeholder={t('profile.taskPlaceholder')}
               className="flex-1 px-3.5 py-2 border border-slate-300 rounded-lg text-sm"
             />
-            <VoiceButton fieldName="task" />
+            {renderVoiceButton('task')}
             <button
               type="button"
               onClick={() => addItem(dailyTasks, setDailyTasks, taskInput, () => setTaskInput(''))}
@@ -478,7 +478,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
               placeholder={t('profile.toolPlaceholder')}
               className="flex-1 px-3.5 py-2 border border-slate-300 rounded-lg text-sm"
             />
-            <VoiceButton fieldName="tool" />
+            {renderVoiceButton('tool')}
             <button
               type="button"
               onClick={() => addItem(toolsUsed, setToolsUsed, toolInput, () => setToolInput(''))}
@@ -537,7 +537,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
               placeholder={t('profile.skillPlaceholder')}
               className="flex-1 px-3.5 py-2 border border-slate-300 rounded-lg text-sm"
             />
-            <VoiceButton fieldName="skill" />
+            {renderVoiceButton('skill')}
             <button
               type="button"
               onClick={() => addItem(skillsDeclared, setSkillsDeclared, skillInput, () => setSkillInput(''))}
@@ -584,7 +584,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
               <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700">
                 {t('profile.informalLearning')}
               </label>
-              <VoiceButton fieldName="informal" />
+              {renderVoiceButton('informal')}
             </div>
             <textarea
               rows={3}
