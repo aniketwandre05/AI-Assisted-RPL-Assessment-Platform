@@ -44,18 +44,23 @@ export const QualificationMatchesPage: React.FC<QualificationMatchesProps> = ({ 
   }, []);
 
   const handleCreateSession = async (qualId: string) => {
+    if (!user) {
+      onNavigate('login');
+      return;
+    }
     setIsCreatingSession(qualId);
+    setError(null);
     try {
       const res = await api.assessments.createSession({
         qualification_id: qualId,
-        worker_id: user?.id,
+        worker_id: user.id,
         location: 'Assessment Centre / Digital Workplace',
         session_date: new Date().toISOString().split('T')[0],
       });
       // Redirect directly to the assessment checklist session!
       onNavigate('assessment-session', res.session.id);
     } catch (err: any) {
-      alert(err.message || 'Could not initiate assessment session.');
+      setError(err.message || 'Could not initiate assessment session.');
     } finally {
       setIsCreatingSession(null);
     }

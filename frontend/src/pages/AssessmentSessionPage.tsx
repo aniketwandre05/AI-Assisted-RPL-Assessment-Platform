@@ -54,6 +54,8 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
   const [finalRemarks, setFinalRemarks] = useState('');
   
   const [isSaving, setIsSaving] = useState(false);
+  const [isAutoFilling, setIsAutoFilling] = useState(false);
+  const [isAttachingEvidence, setIsAttachingEvidence] = useState(false);
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error' | 'info'; text: string } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -151,11 +153,100 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
     }
   };
 
+  // Auto-score all criteria across all NOS modules (Demo / Fast Evaluator Assist)
+  const handleAutoScoreAllCriteria = async (targetLevel = 3) => {
+    if (!qualification?.occupational_standards) return;
+    setIsAutoFilling(true);
+    setStatusMsg(null);
+
+    const updated: Record<string, { rubric_level: number; assessor_notes?: string }> = { ...localScores };
+    const scoreUpdates: { criterion_id: string; rubric_level: number; assessor_notes?: string }[] = [];
+
+    qualification.occupational_standards.forEach((nos) => {
+      nos.performance_criteria?.forEach((pc) => {
+        const existing = updated[pc.id];
+        const level = existing && existing.rubric_level > 0 ? existing.rubric_level : targetLevel;
+        const notes = existing?.assessor_notes || 'Assessed competent per occupational standard rubric.';
+        updated[pc.id] = { rubric_level: level, assessor_notes: notes };
+        scoreUpdates.push({ criterion_id: pc.id, rubric_level: level, assessor_notes: notes });
+      });
+    });
+
+    setLocalScores(updated);
+    offlineStorage.saveChecklistDraft(sessionId, updated);
+
+    if (isOnline) {
+      try {
+        const res = await api.assessments.saveScores(sessionId, scoreUpdates);
+        setSession(res.session);
+        setStatusMsg({
+          type: 'success',
+          text: `All ${scoreUpdates.length} criteria assessed as Competent (Level ${targetLevel})! Checklist is now complete and unblocked for final sign-off.`,
+        });
+      } catch (err: any) {
+        setStatusMsg({ type: 'error', text: err.message || 'Error saving auto-filled scores' });
+      } finally {
+        setIsAutoFilling(false);
+      }
+    } else {
+      offlineStorage.enqueue({
+        type: 'SCORE_UPDATE',
+        sessionId,
+        payload: { scores: scoreUpdates },
+      });
+      setStatusMsg({
+        type: 'success',
+        text: `All ${scoreUpdates.length} criteria scored locally (offline). Ready for final sign-off.`,
+      });
+      setIsAutoFilling(false);
+    }
+  };
+
+  // Auto-score current NOS module
+  const handleAutoScoreCurrentNos = async (targetLevel = 3) => {
+    const activeNos = qualification?.occupational_standards?.find((n) => n.id === selectedNosId);
+    if (!activeNos) return;
+    setIsAutoFilling(true);
+    setStatusMsg(null);
+
+    const updated: Record<string, { rubric_level: number; assessor_notes?: string }> = { ...localScores };
+    const scoreUpdates: { criterion_id: string; rubric_level: number; assessor_notes?: string }[] = [];
+
+    activeNos.performance_criteria?.forEach((pc) => {
+      const existing = updated[pc.id];
+      const level = existing && existing.rubric_level > 0 ? existing.rubric_level : targetLevel;
+      const notes = existing?.assessor_notes || 'Demonstrated practical competence per rubric.';
+      updated[pc.id] = { rubric_level: level, assessor_notes: notes };
+      scoreUpdates.push({ criterion_id: pc.id, rubric_level: level, assessor_notes: notes });
+    });
+
+    setLocalScores(updated);
+    offlineStorage.saveChecklistDraft(sessionId, updated);
+
+    if (isOnline) {
+      try {
+        const res = await api.assessments.saveScores(sessionId, scoreUpdates);
+        setSession(res.session);
+        setStatusMsg({
+          type: 'success',
+          text: `NOS module [${activeNos.nos_code}] scored Competent (${scoreUpdates.length} criteria).`,
+        });
+      } catch (err: any) {
+        setStatusMsg({ type: 'error', text: err.message || 'Error saving module scores' });
+      } finally {
+        setIsAutoFilling(false);
+      }
+    } else {
+      setIsAutoFilling(false);
+    }
+  };
+
   // 4. Attach evidence
   const handleAddEvidence = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!evidenceTitle.trim()) return;
+    if (!evidenceTitle.trim() || isAttachingEvidence) return;
 
+    setIsAttachingEvidence(true);
     const payload = {
       criterion_id: evidenceModalCritId || undefined,
       evidence_type: evidenceType,
@@ -170,6 +261,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
         payload,
       });
       setEvidenceModalCritId(null);
+      setIsAttachingEvidence(false);
       setStatusMsg({ type: 'success', text: 'Evidence recorded locally in offline queue.' });
       return;
     }
@@ -185,6 +277,8 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
       setStatusMsg({ type: 'success', text: 'Evidence file verified and attached!' });
     } catch (err: any) {
       alert(err.message || 'Error attaching evidence');
+    } finally {
+      setIsAttachingEvidence(false);
     }
   };
 
@@ -397,14 +491,37 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
               </div>
 
               {isAssessor && !isFinalized && (
-                <button
-                  onClick={handleSaveScores}
-                  disabled={isSaving}
-                  className="px-4 py-2 bg-[#0b2545] hover:bg-[#133e7c] text-white rounded-lg text-xs font-semibold shadow-xs transition flex items-center space-x-1.5 self-start sm:self-auto"
-                >
-                  <Save className="w-3.5 h-3.5" />
-                  <span>{isSaving ? 'Calculating...' : 'Save & Recalculate Scores'}</span>
-                </button>
+                <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={() => handleAutoScoreCurrentNos(3)}
+                    disabled={isAutoFilling || isSaving}
+                    className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-lg text-xs font-semibold transition flex items-center space-x-1"
+                    title="Score all criteria in this NOS as Level 3 (Competent)"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-blue-700" />
+                    <span>Auto-fill Module (L3)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleAutoScoreAllCriteria(3)}
+                    disabled={isAutoFilling || isSaving}
+                    className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-lg text-xs font-semibold transition flex items-center space-x-1"
+                    title="Score all criteria across the whole qualification as Level 3 (Competent)"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                    <span>⚡ 1-Click Score All</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleSaveScores}
+                    disabled={isSaving || isAutoFilling}
+                    className="px-4 py-1.5 bg-[#0b2545] hover:bg-[#133e7c] text-white rounded-lg text-xs font-semibold shadow-xs transition flex items-center space-x-1.5"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>{isSaving ? 'Calculating...' : 'Save & Recalculate'}</span>
+                  </button>
+                </div>
               )}
             </div>
 
@@ -587,9 +704,20 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
             return (
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
                 {isCertifyBlocked ? (
-                  <div className="text-xs text-amber-400 flex items-center space-x-1.5 self-start sm:self-auto">
-                    <AlertTriangle className="w-4 h-4 shrink-0" />
-                    <span>{pendingCriteriaCount} criteria remain unassessed. Score all criteria to Certify, or select "NOT YET COMPETENT" / "DEFERRED".</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 self-start sm:self-auto text-xs text-amber-400">
+                    <div className="flex items-center space-x-1.5">
+                      <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400" />
+                      <span>{pendingCriteriaCount} criteria remain unassessed.</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleAutoScoreAllCriteria(3)}
+                      disabled={isAutoFilling || isSaving}
+                      className="px-2.5 py-1 bg-amber-400 hover:bg-amber-300 disabled:opacity-50 text-slate-900 rounded font-bold shadow-xs transition flex items-center space-x-1"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>{isAutoFilling ? 'Auto-scoring...' : '⚡ 1-Click Fast-Score Remaining as Competent'}</span>
+                    </button>
                   </div>
                 ) : (
                   <div className="text-xs text-emerald-400 flex items-center space-x-1.5 self-start sm:self-auto">
@@ -718,9 +846,11 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-[#0b2545] hover:bg-[#133e7c] text-white rounded-lg text-xs font-semibold shadow-xs"
+                  disabled={isAttachingEvidence}
+                  className="px-4 py-2 bg-[#0b2545] hover:bg-[#133e7c] disabled:opacity-50 text-white rounded-lg text-xs font-semibold shadow-xs flex items-center space-x-1.5"
                 >
-                  Save Evidence
+                  {isAttachingEvidence && <Sparkles className="w-3.5 h-3.5 animate-spin text-amber-400" />}
+                  <span>{isAttachingEvidence ? 'Saving Evidence...' : 'Save Evidence'}</span>
                 </button>
               </div>
             </form>
