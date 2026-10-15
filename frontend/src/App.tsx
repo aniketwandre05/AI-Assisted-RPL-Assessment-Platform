@@ -51,8 +51,8 @@ const AppContent: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-500">
         <div className="text-center">
-          <div className="inline-block animate-spin w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full mb-3" />
-          <p className="font-medium text-sm">Initializing SAKSHAM Platform...</p>
+          <div className="inline-block animate-spin w-8 h-8 border-4 border-[#0b2545] border-t-amber-500 rounded-full mb-3" />
+          <p className="font-medium text-sm text-slate-700">Initializing SAKSHAM Platform...</p>
         </div>
       </div>
     );
@@ -104,14 +104,14 @@ const AppContent: React.FC = () => {
         {renderView()}
       </main>
 
-      <footer className="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 no-print">
+      <footer className="bg-[#07192f] text-slate-300 text-xs py-8 border-t-2 border-[#133e7c] no-print">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <div className="text-center sm:text-left">
-            <span className="font-bold text-white block">SAKSHAM - RPL Assessment Platform (SIH26242)</span>
-            <span>Developed for Ministry of Skill Development and Entrepreneurship (MSDE) & NCVET</span>
+            <span className="font-bold text-white block text-sm">SAKSHAM - RPL Assessment Platform (SIH26242)</span>
+            <span className="text-slate-400">Developed for Ministry of Skill Development and Entrepreneurship (MSDE) & NCVET</span>
           </div>
-          <div className="flex items-center space-x-4 text-[11px]">
-            <span>NSQF Aligned</span>
+          <div className="flex items-center space-x-4 text-[11px] text-slate-400">
+            <span className="text-amber-400 font-medium">NSQF Aligned</span>
             <span>•</span>
             <span>Deterministic Rubric Engine</span>
             <span>•</span>

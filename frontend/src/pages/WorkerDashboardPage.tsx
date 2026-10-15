@@ -47,7 +47,7 @@ export const WorkerDashboardPage: React.FC<WorkerDashboardProps> = ({ onNavigate
   if (isLoading) {
     return (
       <div className="max-w-7xl mx-auto py-12 px-4 text-center text-slate-500">
-        <div className="inline-block animate-spin w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full mb-3" />
+        <div className="inline-block animate-spin w-8 h-8 border-4 border-[#0b2545] border-t-amber-500 rounded-full mb-3" />
         <p>Loading your worker skill dashboard...</p>
       </div>
     );
@@ -60,7 +60,7 @@ export const WorkerDashboardPage: React.FC<WorkerDashboardProps> = ({ onNavigate
         <div>
           <div className="flex items-center space-x-2">
             <h1 className="text-2xl font-bold text-slate-900">Welcome, {user?.full_name}</h1>
-            <span className="bg-indigo-100 text-indigo-700 text-xs px-2.5 py-0.5 rounded-full font-semibold">
+            <span className="bg-blue-50 text-blue-900 border border-blue-200 text-xs px-2.5 py-0.5 rounded-full font-semibold">
               Worker Portal
             </span>
           </div>
@@ -72,15 +72,15 @@ export const WorkerDashboardPage: React.FC<WorkerDashboardProps> = ({ onNavigate
         <div className="flex items-center space-x-3">
           <button
             onClick={() => onNavigate('worker-profile')}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg shadow-sm transition flex items-center space-x-1.5"
+            className="px-4 py-2 bg-[#0b2545] hover:bg-[#133e7c] text-white text-sm font-semibold rounded-lg shadow-xs transition flex items-center space-x-1.5"
           >
-            <FileText className="w-4 h-4" />
+            <FileText className="w-4 h-4 text-amber-400" />
             <span>{profile ? 'Edit Skill Profile' : 'Complete Self-Declaration'}</span>
           </button>
           {profile && (
             <button
               onClick={() => onNavigate('worker-matches')}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold rounded-lg shadow-sm transition flex items-center space-x-1.5"
+              className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-sm font-semibold rounded-lg shadow-xs transition flex items-center space-x-1.5"
             >
               <Layers className="w-4 h-4" />
               <span>Qualification Matches ({matchesCount})</span>
@@ -94,7 +94,7 @@ export const WorkerDashboardPage: React.FC<WorkerDashboardProps> = ({ onNavigate
         <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
           <div className="flex items-center justify-between text-slate-500 mb-2">
             <span className="text-xs font-semibold uppercase tracking-wider">Skill Declaration</span>
-            <FileText className="w-5 h-5 text-indigo-500" />
+            <FileText className="w-5 h-5 text-[#0b2545]" />
           </div>
           <div className="text-xl font-bold text-slate-900">
             {profile ? profile.occupation_title : 'Not Started'}
@@ -141,7 +141,7 @@ export const WorkerDashboardPage: React.FC<WorkerDashboardProps> = ({ onNavigate
           {matchesCount > 0 && (
             <button
               onClick={() => onNavigate('worker-matches')}
-              className="text-xs text-indigo-600 hover:text-indigo-800 font-semibold flex items-center space-x-1"
+              className="text-xs text-blue-800 hover:text-blue-950 font-semibold flex items-center space-x-1"
             >
               <span>Request new assessment</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -158,7 +158,7 @@ export const WorkerDashboardPage: React.FC<WorkerDashboardProps> = ({ onNavigate
             </p>
             <button
               onClick={() => onNavigate('worker-profile')}
-              className="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-sm transition"
+              className="mt-4 px-4 py-2 bg-[#0b2545] hover:bg-[#133e7c] text-white text-xs font-semibold rounded-lg shadow-xs transition"
             >
               Go to Skill Declaration
             </button>
@@ -221,7 +221,7 @@ export const WorkerDashboardPage: React.FC<WorkerDashboardProps> = ({ onNavigate
                       ) : (
                         <button
                           onClick={() => onNavigate('assessment-session', sess.id)}
-                          className="px-3 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded text-xs font-semibold border border-indigo-200 transition"
+                          className="px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-900 rounded text-xs font-semibold border border-blue-200 transition"
                         >
                           View Checklist
                         </button>

@@ -64,7 +64,7 @@ export const QualificationMatchesPage: React.FC<QualificationMatchesProps> = ({ 
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto py-16 px-4 text-center text-slate-500">
-        <RefreshCw className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
+        <RefreshCw className="w-8 h-8 text-[#0b2545] animate-spin mx-auto mb-3" />
         <h2 className="text-lg font-bold text-slate-800">Analyzing Your Trade Competencies...</h2>
         <p className="text-sm text-slate-500 mt-1">
           Comparing declared tasks and tools against 1,912 official NSQF qualifications...
@@ -79,7 +79,7 @@ export const QualificationMatchesPage: React.FC<QualificationMatchesProps> = ({ 
       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <Layers className="w-6 h-6 text-indigo-600" />
+            <Layers className="w-6 h-6 text-[#0b2545]" />
             <h1 className="text-xl font-bold text-slate-900">NSQF Qualification Match Results</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
@@ -133,7 +133,7 @@ export const QualificationMatchesPage: React.FC<QualificationMatchesProps> = ({ 
           {matchingResult.matches.map((match) => (
             <div
               key={match.qualification_id}
-              className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-5 hover:border-indigo-300 transition"
+              className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-5 hover:border-blue-300 transition"
             >
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-slate-100 pb-4">
                 <div>
@@ -160,7 +160,7 @@ export const QualificationMatchesPage: React.FC<QualificationMatchesProps> = ({ 
                 {/* Match Score Badge */}
                 <div className="flex items-center space-x-2 bg-slate-50 px-3.5 py-1.5 rounded-xl border border-slate-200 self-start">
                   <div className="text-right">
-                    <div className="text-base font-extrabold text-indigo-600 leading-none">
+                    <div className="text-base font-extrabold text-[#0b2545] leading-none">
                       {match.match_score}%
                     </div>
                     <div className="text-[10px] uppercase font-bold text-slate-400">Match Score</div>
@@ -220,7 +220,7 @@ export const QualificationMatchesPage: React.FC<QualificationMatchesProps> = ({ 
                       <span className="font-semibold text-slate-600 block mb-1">Aligned Skills:</span>
                       <div className="flex flex-wrap gap-1">
                         {match.rationale.matched_skills.map((sk, idx) => (
-                          <span key={idx} className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded font-medium">
+                          <span key={idx} className="px-2 py-0.5 bg-blue-50 text-blue-900 rounded font-medium">
                             {sk}
                           </span>
                         ))}
@@ -251,7 +251,7 @@ export const QualificationMatchesPage: React.FC<QualificationMatchesProps> = ({ 
                     <div className="space-y-1.5">
                       {match.rationale.matched_criteria.map((crit, idx) => (
                         <div key={idx} className="p-2 bg-slate-50 border border-slate-200 rounded-md text-xs text-slate-700">
-                          <span className="font-mono font-bold text-indigo-600 mr-2">[{crit.criterion_code}]</span>
+                          <span className="font-mono font-bold text-[#0b2545] mr-2">[{crit.criterion_code}]</span>
                           <span>{crit.criterion_text}</span>
                         </div>
                       ))}
@@ -265,10 +265,10 @@ export const QualificationMatchesPage: React.FC<QualificationMatchesProps> = ({ 
                 <button
                   onClick={() => handleCreateSession(match.qualification_id)}
                   disabled={isCreatingSession === match.qualification_id}
-                  className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-sm transition flex items-center space-x-2"
+                  className="px-5 py-2.5 bg-[#0b2545] hover:bg-[#133e7c] text-white rounded-lg text-sm font-semibold shadow-xs transition flex items-center space-x-2"
                 >
                   <span>{isCreatingSession === match.qualification_id ? 'Initiating Session...' : 'Start Practical Assessment Session'}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 text-amber-400" />
                 </button>
               </div>
             </div>

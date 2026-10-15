@@ -47,7 +47,7 @@ export const PublicVerificationPage: React.FC<PublicVerificationPageProps> = ({ 
   if (isLoading) {
     return (
       <div className="max-w-3xl mx-auto py-20 px-4 text-center text-slate-500">
-        <div className="inline-block animate-spin w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full mb-4" />
+        <div className="inline-block animate-spin w-10 h-10 border-4 border-[#0b2545] border-t-amber-500 rounded-full mb-4" />
         <h2 className="text-lg font-bold text-slate-800">Verifying Digital Credential Signature...</h2>
         <p className="text-xs text-slate-500 mt-1">Cross-referencing cryptographic audit ledger on NCVET registry</p>
       </div>
@@ -71,7 +71,7 @@ export const PublicVerificationPage: React.FC<PublicVerificationPageProps> = ({ 
           <div className="pt-4 flex justify-center space-x-3">
             <button
               onClick={() => onNavigate('landing')}
-              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold transition flex items-center space-x-2"
+              className="px-5 py-2.5 bg-[#0b2545] hover:bg-[#133e7c] text-white rounded-lg text-sm font-semibold transition flex items-center space-x-2"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>Return to Portal Homepage</span>
@@ -98,9 +98,9 @@ export const PublicVerificationPage: React.FC<PublicVerificationPageProps> = ({ 
 
         <button
           onClick={() => window.print()}
-          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-1.5"
+          className="px-4 py-2 bg-[#0b2545] hover:bg-[#133e7c] text-white rounded-lg text-xs font-semibold shadow-xs transition flex items-center space-x-1.5"
         >
-          <Printer className="w-4 h-4" />
+          <Printer className="w-4 h-4 text-amber-400" />
           <span>Print Verification Record</span>
         </button>
       </div>
@@ -148,16 +148,16 @@ export const PublicVerificationPage: React.FC<PublicVerificationPageProps> = ({ 
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5 text-xs">
               <span className="text-slate-500 font-bold uppercase tracking-wider block mb-1">Qualification Framework</span>
               <div><strong>Title:</strong> <span className="text-slate-900 font-semibold">{data.qualification?.title}</span></div>
-              <div><strong>NSQF Level:</strong> <span className="font-bold text-indigo-700">Level {data.qualification?.nsqf_level}</span></div>
+              <div><strong>NSQF Level:</strong> <span className="font-bold text-[#0b2545]">Level {data.qualification?.nsqf_level}</span></div>
               <div><strong>Sector:</strong> <span className="text-slate-700">{data.qualification?.sector}</span></div>
               <div><strong>NQR Code:</strong> <span className="font-mono text-slate-700">{data.qualification?.nqr_code || 'N/A'}</span></div>
             </div>
           </div>
 
           {/* Assessed Score Performance */}
-          <div className="p-4 bg-indigo-50/50 rounded-xl border border-indigo-100 space-y-3">
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-bold uppercase tracking-wider text-indigo-950">Assessment Outcome</span>
+              <span className="font-bold uppercase tracking-wider text-slate-900">Assessment Outcome</span>
               <span className={`px-2.5 py-0.5 rounded-full font-bold text-xs ${
                 isCertified ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
               }`}>
@@ -166,17 +166,17 @@ export const PublicVerificationPage: React.FC<PublicVerificationPageProps> = ({ 
             </div>
 
             <div className="grid grid-cols-3 gap-3 text-center text-xs">
-              <div className="bg-white p-2.5 rounded-lg border border-indigo-100">
+              <div className="bg-white p-2.5 rounded-lg border border-slate-200">
                 <span className="text-[11px] text-slate-500 block">Theory Evaluation</span>
                 <span className="text-base font-extrabold text-slate-900">{data.assessment_outcome?.theory_percentage}%</span>
               </div>
-              <div className="bg-white p-2.5 rounded-lg border border-indigo-100">
+              <div className="bg-white p-2.5 rounded-lg border border-slate-200">
                 <span className="text-[11px] text-slate-500 block">Practical Evaluation</span>
                 <span className="text-base font-extrabold text-slate-900">{data.assessment_outcome?.practical_percentage}%</span>
               </div>
-              <div className="bg-white p-2.5 rounded-lg border border-indigo-100">
+              <div className="bg-white p-2.5 rounded-lg border border-slate-200">
                 <span className="text-[11px] text-slate-500 block">Overall Score</span>
-                <span className="text-base font-extrabold text-indigo-600">{data.assessment_outcome?.overall_percentage}%</span>
+                <span className="text-base font-extrabold text-[#0b2545]">{data.assessment_outcome?.overall_percentage}%</span>
               </div>
             </div>
           </div>

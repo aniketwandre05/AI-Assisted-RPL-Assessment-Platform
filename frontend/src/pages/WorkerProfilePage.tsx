@@ -152,7 +152,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
         className={`px-3 py-2 rounded-lg border text-xs font-semibold flex items-center space-x-1.5 transition flex-shrink-0 ${
           isFieldListening
             ? 'bg-red-50 text-red-700 border-red-300 animate-pulse ring-2 ring-red-400'
-            : 'bg-slate-100 hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 border-slate-300'
+            : 'bg-slate-100 hover:bg-amber-50 text-slate-700 hover:text-amber-800 border-slate-300'
         }`}
       >
         {isFieldListening ? (
@@ -162,7 +162,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
           </>
         ) : (
           <>
-            <Mic className="w-4 h-4 text-indigo-600" />
+            <Mic className="w-4 h-4 text-amber-600" />
             <span className="hidden sm:inline">{t('voice.start')}</span>
           </>
         )}
@@ -292,7 +292,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
       {/* Title Card */}
       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-[#0b2545]/10 text-[#0b2545] rounded-lg flex items-center justify-center">
             <FileText className="w-6 h-6" />
           </div>
           <div>
@@ -326,7 +326,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
         {/* Step 1: Occupation & Experience */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center space-x-2">
-            <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">1</span>
+            <span className="w-6 h-6 rounded-full bg-[#0b2545] text-white flex items-center justify-center text-xs font-bold">1</span>
             <span>{t('profile.step1')}</span>
           </h2>
 
@@ -342,7 +342,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
                   value={occupationTitle}
                   onChange={(e) => setOccupationTitle(e.target.value)}
                   placeholder={t('profile.occupationPlaceholder')}
-                  className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                  className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700"
                 />
                 <VoiceButton fieldName="occupation" />
               </div>
@@ -359,7 +359,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
                 max="50"
                 value={experienceYears}
                 onChange={(e) => setExperienceYears(parseFloat(e.target.value) || 0)}
-                className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700"
               />
             </div>
           </div>
@@ -401,7 +401,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
         {/* Step 2: Daily Practical Tasks */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center space-x-2">
-            <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">2</span>
+            <span className="w-6 h-6 rounded-full bg-[#0b2545] text-white flex items-center justify-center text-xs font-bold">2</span>
             <span>{t('profile.step2')}</span>
           </h2>
           <p className="text-xs text-slate-500">
@@ -437,7 +437,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
                   key={idx}
                   type="button"
                   onClick={() => addItem(dailyTasks, setDailyTasks, tItem, () => {})}
-                  className="px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 rounded-full text-xs transition border border-slate-200"
+                  className="px-2.5 py-1 bg-slate-100 hover:bg-blue-50 hover:text-blue-900 text-slate-700 rounded-full text-xs transition border border-slate-200"
                 >
                   + {tItem}
                 </button>
@@ -465,7 +465,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
         {/* Step 3: Tools and Equipment */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center space-x-2">
-            <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">3</span>
+            <span className="w-6 h-6 rounded-full bg-[#0b2545] text-white flex items-center justify-center text-xs font-bold">3</span>
             <span>{t('profile.step3')}</span>
           </h2>
 
@@ -497,7 +497,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
                   key={idx}
                   type="button"
                   onClick={() => addItem(toolsUsed, setToolsUsed, tool, () => {})}
-                  className="px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 rounded-full text-xs transition border border-slate-200"
+                  className="px-2.5 py-1 bg-slate-100 hover:bg-blue-50 hover:text-blue-900 text-slate-700 rounded-full text-xs transition border border-slate-200"
                 >
                   + {tool}
                 </button>
@@ -507,12 +507,12 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
 
           <div className="flex flex-wrap gap-2 mt-2">
             {toolsUsed.map((tool, idx) => (
-              <span key={idx} className="inline-flex items-center px-3 py-1 bg-indigo-50 text-indigo-800 rounded-full text-xs font-semibold border border-indigo-200">
+              <span key={idx} className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-900 rounded-full text-xs font-semibold border border-blue-200">
                 {tool}
                 <button
                   type="button"
                   onClick={() => removeItem(toolsUsed, setToolsUsed, idx)}
-                  className="ml-1.5 text-indigo-400 hover:text-red-600"
+                  className="ml-1.5 text-blue-400 hover:text-red-600"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -524,7 +524,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
         {/* Step 4: Skills & Informal Background */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center space-x-2">
-            <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs">4</span>
+            <span className="w-6 h-6 rounded-full bg-[#0b2545] text-white flex items-center justify-center text-xs font-bold">4</span>
             <span>{t('profile.step4')}</span>
           </h2>
 
@@ -556,7 +556,7 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
                   key={idx}
                   type="button"
                   onClick={() => addItem(skillsDeclared, setSkillsDeclared, sk, () => {})}
-                  className="px-2.5 py-1 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 rounded-full text-xs transition border border-slate-200"
+                  className="px-2.5 py-1 bg-slate-100 hover:bg-blue-50 hover:text-blue-900 text-slate-700 rounded-full text-xs transition border border-slate-200"
                 >
                   + {sk}
                 </button>
@@ -614,9 +614,9 @@ export const WorkerProfilePage: React.FC<WorkerProfileProps> = ({ onNavigate }) 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold shadow-md transition disabled:opacity-50 flex items-center justify-center space-x-2 w-full sm:w-auto"
+              className="px-6 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-sm font-semibold shadow-xs transition disabled:opacity-50 flex items-center justify-center space-x-2 w-full sm:w-auto"
             >
-              <Sparkles className="w-4 h-4 text-amber-300" />
+              <Sparkles className="w-4 h-4 text-white" />
               <span>{isSubmitting ? t('profile.submitting') : t('profile.submit')}</span>
             </button>
           </div>

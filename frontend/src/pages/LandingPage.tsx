@@ -49,21 +49,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-900 text-white py-16 px-4 sm:px-6 lg:px-8">
+      <section className="relative bg-[#0b2545] text-white py-16 px-4 sm:px-6 lg:px-8 border-b border-[#133a68]">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 text-xs font-semibold uppercase tracking-wider mb-6">
-            <Award className="w-4 h-4 text-amber-300" />
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-[#133e7c] text-amber-300 border border-[#205493] text-xs font-semibold uppercase tracking-wider mb-6">
+            <Award className="w-4 h-4 text-amber-400" />
             <span>{t('landing.badge')}</span>
           </div>
           
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight max-w-4xl mx-auto">
+          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight max-w-4xl mx-auto text-white">
             {t('landing.heroTitle')} <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-indigo-200 to-teal-300">
+            <span className="text-amber-400 font-extrabold tracking-wide">
               {t('landing.heroHighlight')}
             </span>
           </h1>
 
-          <p className="mt-6 text-base sm:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed">
+          <p className="mt-6 text-base sm:text-lg text-slate-200 max-w-3xl mx-auto leading-relaxed">
             {t('landing.heroDesc')}
           </p>
 
@@ -73,14 +73,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
               <>
                 <button
                   onClick={() => onNavigate('register')}
-                  className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-indigo-500/25 transition flex items-center space-x-2"
+                  className="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-lg shadow-sm border border-amber-500 transition flex items-center space-x-2"
                 >
                   <span>{t('landing.registerWorker')}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => onNavigate('login')}
-                  className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold rounded-lg border border-slate-700 transition"
+                  className="px-6 py-3 bg-[#133e7c] hover:bg-[#1a4f9c] text-white font-semibold rounded-lg border border-[#205493] transition"
                 >
                   {t('landing.signInAccount')}
                 </button>
@@ -92,7 +92,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
                   else if (user?.role === 'assessor') onNavigate('assessor-dashboard');
                   else onNavigate('admin-dashboard');
                 }}
-                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg shadow-lg transition flex items-center space-x-2"
+                className="px-6 py-3 bg-emerald-700 hover:bg-emerald-600 text-white font-semibold rounded-lg shadow-sm transition flex items-center space-x-2"
               >
                 <span>Go to Your {user?.role.toUpperCase()} Dashboard</span>
                 <ArrowRight className="w-4 h-4" />
@@ -101,30 +101,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           </div>
 
           {/* 1-Click Evaluation Demo Logins */}
-          <div className="mt-10 pt-6 border-t border-slate-800 max-w-2xl mx-auto">
-            <span className="text-xs uppercase tracking-wider text-slate-400 font-bold block mb-3">
+          <div className="mt-10 pt-6 border-t border-[#133a68] max-w-2xl mx-auto">
+            <span className="text-xs uppercase tracking-wider text-slate-300 font-bold block mb-3">
               {t('landing.quickPersonas')}
             </span>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
               <button
                 onClick={() => handleQuickLogin('worker')}
-                className="py-2 px-3 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 transition flex items-center justify-center space-x-1"
+                className="py-2.5 px-3 bg-[#07192f] hover:bg-[#133e7c] text-slate-200 rounded border border-[#1a4373] transition flex items-center justify-center space-x-1.5 font-medium"
               >
                 <Users className="w-3.5 h-3.5 text-blue-400" />
                 <span>{t('landing.workerRajesh')}</span>
               </button>
               <button
                 onClick={() => handleQuickLogin('assessor')}
-                className="py-2 px-3 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 transition flex items-center justify-center space-x-1"
+                className="py-2.5 px-3 bg-[#07192f] hover:bg-[#133e7c] text-slate-200 rounded border border-[#1a4373] transition flex items-center justify-center space-x-1.5 font-medium"
               >
                 <FileCheck className="w-3.5 h-3.5 text-emerald-400" />
                 <span>{t('landing.assessorAnanya')}</span>
               </button>
               <button
                 onClick={() => handleQuickLogin('admin')}
-                className="py-2 px-3 bg-slate-800/80 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 transition flex items-center justify-center space-x-1"
+                className="py-2.5 px-3 bg-[#07192f] hover:bg-[#133e7c] text-slate-200 rounded border border-[#1a4373] transition flex items-center justify-center space-x-1.5 font-medium"
               >
-                <Shield className="w-3.5 h-3.5 text-purple-400" />
+                <Shield className="w-3.5 h-3.5 text-amber-400" />
                 <span>{t('landing.administrator')}</span>
               </button>
             </div>
@@ -145,8 +145,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Card 1 */}
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
-            <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center mb-4 font-bold text-xl">
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition border-t-4 border-t-[#0b2545]">
+            <div className="w-12 h-12 bg-blue-50 text-[#0b2545] border border-blue-200 rounded-lg flex items-center justify-center mb-4 font-bold text-xl">
               1
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-2">Structured Self-Declaration & Mapping</h3>
@@ -157,8 +157,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           </div>
 
           {/* Card 2 */}
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
-            <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center mb-4 font-bold text-xl">
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition border-t-4 border-t-emerald-700">
+            <div className="w-12 h-12 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-lg flex items-center justify-center mb-4 font-bold text-xl">
               2
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-2">Guided Standardized Scoring Rubric</h3>
@@ -169,8 +169,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           </div>
 
           {/* Card 3 */}
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition">
-            <div className="w-12 h-12 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center mb-4 font-bold text-xl">
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-xs hover:border-slate-300 transition border-t-4 border-t-amber-600">
+            <div className="w-12 h-12 bg-amber-50 text-amber-800 border border-amber-200 rounded-lg flex items-center justify-center mb-4 font-bold text-xl">
               3
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-2">Human-in-the-Loop Governance</h3>
@@ -182,27 +182,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
         </div>
 
         {/* Highlighted Feature Badges */}
-        <div className="mt-12 bg-slate-900 text-white rounded-2xl p-8 shadow-xl">
+        <div className="mt-12 bg-[#0b2545] text-white rounded-xl p-8 border border-[#133a68] shadow-md">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
-            <div className="p-4 border border-slate-800 rounded-xl bg-slate-800/40">
-              <BookOpen className="w-8 h-8 text-indigo-400 mx-auto mb-2" />
+            <div className="p-4 border border-[#1a4373] rounded-lg bg-[#07192f]">
+              <BookOpen className="w-8 h-8 text-amber-400 mx-auto mb-2" />
               <div className="text-2xl font-bold">1,912</div>
-              <div className="text-xs text-slate-400">Official NQR Qualifications</div>
+              <div className="text-xs text-slate-300">Official NQR Qualifications</div>
             </div>
-            <div className="p-4 border border-slate-800 rounded-xl bg-slate-800/40">
-              <Cpu className="w-8 h-8 text-teal-400 mx-auto mb-2" />
+            <div className="p-4 border border-[#1a4373] rounded-lg bg-[#07192f]">
+              <Cpu className="w-8 h-8 text-blue-400 mx-auto mb-2" />
               <div className="text-2xl font-bold">84+</div>
-              <div className="text-xs text-slate-400">Full-Stack Developer Criteria</div>
+              <div className="text-xs text-slate-300">Full-Stack Developer Criteria</div>
             </div>
-            <div className="p-4 border border-slate-800 rounded-xl bg-slate-800/40">
+            <div className="p-4 border border-[#1a4373] rounded-lg bg-[#07192f]">
               <WifiOff className="w-8 h-8 text-amber-400 mx-auto mb-2" />
               <div className="text-2xl font-bold">Offline-Ready</div>
-              <div className="text-xs text-slate-400">IndexedDB & Background Sync</div>
+              <div className="text-xs text-slate-300">IndexedDB & Background Sync</div>
             </div>
-            <div className="p-4 border border-slate-800 rounded-xl bg-slate-800/40">
+            <div className="p-4 border border-[#1a4373] rounded-lg bg-[#07192f]">
               <Shield className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
               <div className="text-2xl font-bold">100% Audited</div>
-              <div className="text-xs text-slate-400">Tamper-Evident Signatures</div>
+              <div className="text-xs text-slate-300">Tamper-Evident Signatures</div>
             </div>
           </div>
         </div>

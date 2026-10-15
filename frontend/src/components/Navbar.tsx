@@ -37,9 +37,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
   };
 
   return (
-    <header className="bg-slate-900 text-white shadow-md sticky top-0 z-50">
-      {/* Official Gov/MSDE Top Banner */}
-      <div className="bg-slate-950 px-4 py-1.5 text-xs flex justify-between items-center text-slate-300 border-b border-slate-800">
+    <header className="bg-[#0b2545] text-white shadow-md sticky top-0 z-50 border-b border-[#133a68]">
+      {/* Official Gov/MSDE Top Banner with National Tiranga Stripe */}
+      <div className="h-1 w-full bg-gradient-to-r from-orange-500 via-white to-emerald-600"></div>
+      <div className="bg-[#07192f] px-4 py-1.5 text-xs flex justify-between items-center text-slate-300 border-b border-[#123158]">
         <div className="flex items-center space-x-3">
           <span className="font-semibold text-amber-400">Skill India Digital / NCVET</span>
           <span>•</span>
@@ -47,17 +48,17 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
         </div>
         <div className="flex items-center space-x-3">
           {/* Language Switcher */}
-          <div className="flex items-center space-x-1.5 bg-slate-900 border border-slate-700/80 rounded px-2 py-0.5 text-xs text-slate-200 shadow-inner">
-            <Globe className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0" />
+          <div className="flex items-center space-x-1.5 bg-[#0b2545] border border-slate-600 rounded px-2 py-0.5 text-xs text-slate-200 shadow-inner">
+            <Globe className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
             <select
               aria-label="Select platform language"
               value={language}
               onChange={(e) => setLanguage(e.target.value as Language)}
               className="bg-transparent text-slate-200 text-xs font-medium focus:outline-none cursor-pointer pr-1"
             >
-              <option value="en" className="bg-slate-900 text-slate-200">English (EN)</option>
-              <option value="hi" className="bg-slate-900 text-slate-200">हिंदी (HI)</option>
-              <option value="mr" className="bg-slate-900 text-slate-200">मराठी (MR)</option>
+              <option value="en" className="bg-[#0b2545] text-slate-200">English (EN)</option>
+              <option value="hi" className="bg-[#0b2545] text-slate-200">हिंदी (HI)</option>
+              <option value="mr" className="bg-[#0b2545] text-slate-200">मराठी (MR)</option>
             </select>
           </div>
 
@@ -97,12 +98,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
             onClick={() => onNavigate('landing')}
             className="flex items-center space-x-3 cursor-pointer group"
           >
-            <div className="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center font-bold text-white shadow-inner group-hover:bg-indigo-500 transition">
-              <Award className="w-6 h-6 text-amber-300" />
+            <div className="w-10 h-10 rounded-lg bg-[#133e7c] border border-[#205493] flex items-center justify-center font-bold text-white shadow-inner group-hover:bg-[#1a4f9c] transition">
+              <Award className="w-6 h-6 text-amber-400" />
             </div>
             <div>
               <span className="text-lg font-bold tracking-tight block">{t('nav.brand')}</span>
-              <span className="text-xs text-slate-400 block -mt-1">{t('nav.subbrand')}</span>
+              <span className="text-xs text-slate-300 block -mt-1">{t('nav.subbrand')}</span>
             </div>
           </div>
 
@@ -111,7 +112,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
             <button
               onClick={() => onNavigate('landing')}
               className={`px-3 py-2 rounded-md text-sm font-medium transition ${
-                currentView === 'landing' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                currentView === 'landing' ? 'bg-[#133e7c] text-white shadow-xs' : 'text-slate-200 hover:bg-[#133e7c]/60 hover:text-white'
               }`}
             >
               {t('nav.home')}
@@ -122,7 +123,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                 <button
                   onClick={() => onNavigate('worker-dashboard')}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition ${
-                    currentView === 'worker-dashboard' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    currentView === 'worker-dashboard' ? 'bg-[#133e7c] text-white shadow-xs' : 'text-slate-200 hover:bg-[#133e7c]/60 hover:text-white'
                   }`}
                 >
                   {t('nav.myDashboard')}
@@ -130,18 +131,18 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
                 <button
                   onClick={() => onNavigate('worker-profile')}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition ${
-                    currentView === 'worker-profile' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    currentView === 'worker-profile' ? 'bg-[#133e7c] text-white shadow-xs' : 'text-slate-200 hover:bg-[#133e7c]/60 hover:text-white'
                   }`}
                 >
-                  <FileText className="w-4 h-4 inline mr-1" /> {t('nav.skillDeclaration')}
+                  <FileText className="w-4 h-4 inline mr-1 text-amber-400" /> {t('nav.skillDeclaration')}
                 </button>
                 <button
                   onClick={() => onNavigate('worker-matches')}
                   className={`px-3 py-2 rounded-md text-sm font-medium transition ${
-                    currentView === 'worker-matches' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    currentView === 'worker-matches' ? 'bg-[#133e7c] text-white shadow-xs' : 'text-slate-200 hover:bg-[#133e7c]/60 hover:text-white'
                   }`}
                 >
-                  <Layers className="w-4 h-4 inline mr-1" /> {t('nav.qualMatches')}
+                  <Layers className="w-4 h-4 inline mr-1 text-amber-400" /> {t('nav.qualMatches')}
                 </button>
               </>
             )}
@@ -150,10 +151,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               <button
                 onClick={() => onNavigate('assessor-dashboard')}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition ${
-                  currentView === 'assessor-dashboard' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  currentView === 'assessor-dashboard' ? 'bg-[#133e7c] text-white shadow-xs' : 'text-slate-200 hover:bg-[#133e7c]/60 hover:text-white'
                 }`}
               >
-                <CheckSquare className="w-4 h-4 inline mr-1" /> {t('nav.assessorPortal')}
+                <CheckSquare className="w-4 h-4 inline mr-1 text-emerald-400" /> {t('nav.assessorPortal')}
               </button>
             )}
 
@@ -161,10 +162,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               <button
                 onClick={() => onNavigate('admin-dashboard')}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition ${
-                  currentView === 'admin-dashboard' ? 'bg-slate-800 text-white' : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                  currentView === 'admin-dashboard' ? 'bg-[#133e7c] text-white shadow-xs' : 'text-slate-200 hover:bg-[#133e7c]/60 hover:text-white'
                 }`}
               >
-                <ShieldCheck className="w-4 h-4 inline mr-1" /> {t('nav.adminAudits')}
+                <ShieldCheck className="w-4 h-4 inline mr-1 text-amber-400" /> {t('nav.adminAudits')}
               </button>
             )}
           </nav>
@@ -175,17 +176,17 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               <div className="flex items-center space-x-3">
                 <div className="text-right hidden sm:block">
                   <div className="text-sm font-medium text-slate-200">{user.full_name}</div>
-                  <span className={`inline-block px-2 py-0.2 text-[10px] uppercase font-bold rounded tracking-wider ${
-                    user.role === 'admin' ? 'bg-purple-900 text-purple-200' :
-                    user.role === 'assessor' ? 'bg-emerald-900 text-emerald-200' :
-                    'bg-blue-900 text-blue-200'
+                  <span className={`inline-block px-2 py-0.2 text-[10px] uppercase font-bold rounded tracking-wider border ${
+                    user.role === 'admin' ? 'bg-amber-950/80 text-amber-300 border-amber-800' :
+                    user.role === 'assessor' ? 'bg-emerald-950 text-emerald-300 border-emerald-800' :
+                    'bg-blue-950 text-blue-300 border-blue-800'
                   }`}>
                     {user.role}
                   </span>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                  className="p-2 rounded-lg text-slate-300 hover:text-white hover:bg-[#133e7c] transition"
                   title={t('nav.logout')}
                 >
                   <LogOut className="w-5 h-5" />
@@ -195,13 +196,13 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => onNavigate('login')}
-                  className="px-3 py-1.5 text-sm font-medium text-slate-200 hover:text-white hover:bg-slate-800 rounded-md transition"
+                  className="px-3.5 py-1.5 text-sm font-medium text-slate-100 hover:text-white hover:bg-[#133e7c] border border-slate-600 rounded-md transition"
                 >
                   {t('nav.signIn')}
                 </button>
                 <button
                   onClick={() => onNavigate('register')}
-                  className="px-3.5 py-1.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-md shadow transition"
+                  className="px-4 py-1.5 text-sm font-semibold text-white bg-amber-600 hover:bg-amber-500 rounded-md shadow-xs transition"
                 >
                   {t('nav.register')}
                 </button>

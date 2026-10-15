@@ -48,7 +48,7 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
   if (isLoading || !report) {
     return (
       <div className="max-w-4xl mx-auto py-16 px-4 text-center text-slate-500">
-        <div className="inline-block animate-spin w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full mb-3" />
+        <div className="inline-block animate-spin w-8 h-8 border-4 border-[#0b2545] border-t-amber-500 rounded-full mb-3" />
         <p>Generating formal NSQF Competency Profile...</p>
       </div>
     );
@@ -70,9 +70,9 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
 
         <button
           onClick={handlePrint}
-          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-1.5"
+          className="px-4 py-2 bg-[#0b2545] hover:bg-[#133e7c] text-white rounded-lg text-xs font-semibold shadow-xs transition flex items-center space-x-1.5"
         >
-          <Printer className="w-4 h-4" />
+          <Printer className="w-4 h-4 text-amber-400" />
           <span>Print / Export Certificate Profile</span>
         </button>
       </div>
@@ -80,15 +80,15 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
       {/* Official Certificate & Competency Document */}
       <div className="bg-white rounded-2xl border-2 border-slate-300 shadow-lg p-8 sm:p-12 space-y-8 relative overflow-hidden">
         {/* Certificate Decorative Border Header */}
-        <div className="border-b-2 border-indigo-900 pb-6 text-center space-y-2">
-          <div className="inline-flex items-center space-x-2 text-indigo-900 font-bold text-sm tracking-wider uppercase">
+        <div className="border-b-2 border-[#0b2545] pb-6 text-center space-y-2">
+          <div className="inline-flex items-center space-x-2 text-[#0b2545] font-bold text-sm tracking-wider uppercase">
             <Award className="w-6 h-6 text-amber-500" />
             <span>National Council for Vocational Education and Training (NCVET)</span>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
             RECOGNITION OF PRIOR LEARNING (RPL)
           </h1>
-          <div className="text-sm font-semibold text-indigo-700">
+          <div className="text-sm font-semibold text-[#133e7c]">
             OFFICIAL NSQF COMPETENCY PROFILE & ASSESSMENT REPORT
           </div>
           <div className="text-xs text-slate-400 font-mono">
@@ -144,7 +144,7 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
 
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
               <span className="text-xs text-slate-500 font-medium block">Overall Aggregate</span>
-              <div className="text-xl font-extrabold text-indigo-700 mt-1">
+              <div className="text-xl font-extrabold text-[#0b2545] mt-1">
                 {report.score_summary.overall.percentage}%
               </div>
               <span className="text-[11px] text-slate-500">
@@ -173,7 +173,7 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
               <tbody className="divide-y divide-slate-100">
                 {report.nos_breakdown.map((row, idx) => (
                   <tr key={idx} className="hover:bg-slate-50">
-                    <td className="py-2.5 px-3 font-mono font-bold text-indigo-600">{row.nos_code}</td>
+                    <td className="py-2.5 px-3 font-mono font-bold text-[#0b2545]">{row.nos_code}</td>
                     <td className="py-2.5 px-3 font-medium text-slate-800">{row.nos_title}</td>
                     <td className="py-2.5 px-3 text-center">{row.assessed_count} / {row.criteria_count}</td>
                     <td className="py-2.5 px-3 text-right">{row.theory_score} / {row.max_theory}</td>
@@ -187,11 +187,11 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
 
         {/* NCVET 12-Hour Mandatory Orientation & Bridge Course Prescription */}
         {report.orientation_and_bridge_plan && (
-          <div className="p-5 bg-gradient-to-br from-indigo-50/70 to-blue-50/50 rounded-xl border border-indigo-200/80 space-y-3">
+          <div className="p-5 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <BookOpen className="w-5 h-5 text-indigo-700" />
-                <h2 className="text-xs font-bold uppercase tracking-wider text-indigo-950">
+                <BookOpen className="w-5 h-5 text-[#0b2545]" />
+                <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900">
                   NCVET Mandatory 12-Hour Orientation & Bridge Course Prescription
                 </h2>
               </div>
@@ -211,9 +211,9 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
             {/* Standard 12-Hour Orientation Breakdown */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px]">
               {report.orientation_and_bridge_plan.orientation_modules.map((m, idx) => (
-                <div key={idx} className="bg-white/80 p-2.5 rounded-lg border border-indigo-100 shadow-2xs space-y-1">
-                  <div className="flex items-center text-indigo-800 font-semibold">
-                    <Clock className="w-3.5 h-3.5 mr-1 text-indigo-500" />
+                <div key={idx} className="bg-white p-2.5 rounded-lg border border-slate-200 shadow-2xs space-y-1">
+                  <div className="flex items-center text-[#0b2545] font-semibold">
+                    <Clock className="w-3.5 h-3.5 mr-1 text-slate-500" />
                     <span>{m.hours} Hours</span>
                   </div>
                   <p className="text-slate-600 line-clamp-2">{m.module_name}</p>
@@ -256,7 +256,7 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
             <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">
               Verified Practical Evidence Manifest
             </h2>
-            <span className="text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 flex items-center space-x-1">
+            <span className="text-[11px] font-semibold text-[#0b2545] bg-blue-50 px-2 py-0.5 rounded border border-blue-200 flex items-center space-x-1">
               <Sparkles className="w-3 h-3 text-amber-500" />
               <span>AI Vision Audited</span>
             </span>
@@ -364,14 +364,14 @@ export const CompetencyReportPage: React.FC<CompetencyReportProps> = ({ sessionI
                     href={report.audit_verification.verification_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-indigo-400 hover:text-indigo-300 underline break-all"
+                    className="text-cyan-400 hover:text-cyan-300 underline break-all"
                   >
                     {report.audit_verification.verification_url}
                   </a>
                   <button
                     type="button"
                     onClick={() => onNavigate('verify', report.assessment_details.signature_hash || `DRAFT-${report.session_id.slice(0, 8)}`)}
-                    className="no-print px-2 py-0.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-sans text-[10px] font-semibold transition"
+                    className="no-print px-2 py-0.5 bg-[#133e7c] hover:bg-[#1a4f9c] text-white rounded font-sans text-[10px] font-semibold transition"
                   >
                     Open Verification Audit View
                   </button>

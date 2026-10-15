@@ -235,7 +235,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
   if (isLoading || !session || !qualification) {
     return (
       <div className="max-w-7xl mx-auto py-16 px-4 text-center text-slate-500">
-        <div className="inline-block animate-spin w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full mb-3" />
+        <div className="inline-block animate-spin w-8 h-8 border-4 border-[#0b2545] border-t-amber-500 rounded-full mb-3" />
         <p>Loading official practical checklist...</p>
       </div>
     );
@@ -274,7 +274,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
           <div>
             <div className="flex items-center space-x-2">
               <h1 className="text-xl font-bold text-slate-900">{qualification.title}</h1>
-              <span className="px-2.5 py-0.5 bg-indigo-50 text-indigo-700 font-bold text-xs rounded-full">
+              <span className="px-2.5 py-0.5 bg-blue-50 text-blue-900 border border-blue-200 font-bold text-xs rounded-full">
                 NSQF Level {qualification.nsqf_level}
               </span>
             </div>
@@ -289,9 +289,9 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
           <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs">
             <span className="font-bold text-slate-700 block mb-1">Official Qualifying Rules (Page 8):</span>
             <div className="flex items-center space-x-3 text-slate-600">
-              <span>Theory Min: <strong className="text-indigo-600">40%</strong></span>
+              <span>Theory Min: <strong className="text-blue-900">40%</strong></span>
               <span>•</span>
-              <span>Practical Min: <strong className="text-indigo-600">60%</strong></span>
+              <span>Practical Min: <strong className="text-blue-900">60%</strong></span>
             </div>
           </div>
         </div>
@@ -373,7 +373,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
               onClick={() => setSelectedNosId(nos.id)}
               className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition ${
                 selectedNosId === nos.id
-                  ? 'bg-indigo-600 text-white shadow-sm'
+                  ? 'bg-[#0b2545] text-white shadow-xs'
                   : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
               }`}
             >
@@ -400,7 +400,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
                 <button
                   onClick={handleSaveScores}
                   disabled={isSaving}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-1.5 self-start sm:self-auto"
+                  className="px-4 py-2 bg-[#0b2545] hover:bg-[#133e7c] text-white rounded-lg text-xs font-semibold shadow-xs transition flex items-center space-x-1.5 self-start sm:self-auto"
                 >
                   <Save className="w-3.5 h-3.5" />
                   <span>{isSaving ? 'Calculating...' : 'Save & Recalculate Scores'}</span>
@@ -422,7 +422,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
                       <div className="space-y-1">
                         <div className="flex items-center space-x-2">
-                          <span className="font-mono text-xs font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+                          <span className="font-mono text-xs font-bold text-[#0b2545] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                             {pc.criterion_code}
                           </span>
                           <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
@@ -453,7 +453,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
                                 <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold border shadow-2xs ${
                                   ai.status === 'FLAGGED_ANOMALY'
                                     ? 'bg-rose-50 text-rose-700 border-rose-300'
-                                    : 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                                    : 'bg-blue-50 text-blue-900 border-blue-200'
                                 }`}>
                                   <Sparkles className="w-3 h-3 mr-1 text-amber-500" />
                                   <span>AI Inspected ({Math.round(ai.confidence_score * 100)}%)</span>
@@ -489,7 +489,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         {[
                           { level: 4, label: '4 - Exceeds (100%)', bg: 'bg-emerald-600', activeBg: 'bg-emerald-50 text-emerald-800 border-emerald-500' },
-                          { level: 3, label: '3 - Competent (75%)', bg: 'bg-indigo-600', activeBg: 'bg-indigo-50 text-indigo-800 border-indigo-500' },
+                          { level: 3, label: '3 - Competent (75%)', bg: 'bg-[#133e7c]', activeBg: 'bg-blue-50 text-blue-900 border-[#133e7c]' },
                           { level: 2, label: '2 - Developing (50%)', bg: 'bg-amber-600', activeBg: 'bg-amber-50 text-amber-800 border-amber-500' },
                           { level: 1, label: '1 - Not Demonstrated (0%)', bg: 'bg-red-600', activeBg: 'bg-red-50 text-red-800 border-red-500' },
                         ].map((btn) => (
@@ -500,7 +500,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
                             onClick={() => updateCriterionScore(pc.id, btn.level)}
                             className={`py-2 px-2.5 rounded-lg text-xs font-semibold border text-center transition ${
                               currentScore.rubric_level === btn.level
-                                ? `${btn.activeBg} ring-2 ring-indigo-500`
+                                ? `${btn.activeBg} ring-2 ring-blue-700`
                                 : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100 disabled:opacity-60'
                             }`}
                           >
@@ -519,7 +519,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
                           placeholder="Assessor observation notes / viva remarks..."
                           value={currentScore.assessor_notes || ''}
                           onChange={(e) => updateCriterionScore(pc.id, currentScore.rubric_level, e.target.value)}
-                          className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-md bg-white focus:border-indigo-500"
+                          className="w-full px-3 py-1.5 text-xs border border-slate-200 rounded-md bg-white focus:border-blue-700"
                         />
                       </div>
                     )}
@@ -553,7 +553,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
               <select
                 value={finalDecision}
                 onChange={(e) => setFinalDecision(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:border-amber-500"
               >
                 <option value="CERTIFIED">CERTIFIED (Meets NSQF Competencies)</option>
                 <option value="NOT_YET_COMPETENT">NOT YET COMPETENT</option>
@@ -571,7 +571,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
                 value={finalRemarks}
                 onChange={(e) => setFinalRemarks(e.target.value)}
                 placeholder="e.g. Demonstrated practical mastery on all core programming tasks."
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:border-amber-500"
               />
             </div>
           </div>
@@ -617,7 +617,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
             <h3 className="text-base font-bold text-slate-900 flex items-center space-x-2">
-              <Upload className="w-5 h-5 text-indigo-600" />
+              <Upload className="w-5 h-5 text-[#0b2545]" />
               <span>Attach Permitted Practical Evidence & AI Vision Audit</span>
             </h3>
             <p className="text-xs text-slate-500">
@@ -645,7 +645,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
                               href={ev.external_url}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-indigo-600 hover:text-indigo-800 underline font-medium text-[11px] flex items-center space-x-1"
+                              className="text-blue-800 hover:text-blue-950 underline font-medium text-[11px] flex items-center space-x-1"
                             >
                               <span>View Media</span>
                               <ExternalLink className="w-3 h-3" />
@@ -718,7 +718,7 @@ export const AssessmentSessionPage: React.FC<AssessmentSessionProps> = ({ sessio
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm"
+                  className="px-4 py-2 bg-[#0b2545] hover:bg-[#133e7c] text-white rounded-lg text-xs font-semibold shadow-xs"
                 >
                   Save Evidence
                 </button>

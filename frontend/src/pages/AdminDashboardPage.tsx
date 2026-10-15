@@ -195,7 +195,7 @@ export const AdminDashboardPage: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <div className="flex items-center space-x-2">
-              <ShieldCheck className="w-6 h-6 text-purple-600" />
+              <ShieldCheck className="w-6 h-6 text-[#0b2545]" />
               <h1 className="text-xl font-bold text-slate-900">National Administrator Dashboard</h1>
             </div>
             <p className="text-xs text-slate-500 mt-1">
@@ -204,7 +204,7 @@ export const AdminDashboardPage: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1.5 bg-purple-50 text-purple-800 rounded-lg text-xs font-semibold border border-purple-200">
+            <span className="px-3 py-1.5 bg-blue-50 text-blue-900 rounded-lg text-xs font-semibold border border-blue-200">
               {totalCount} Total Qualifications
             </span>
 
@@ -213,10 +213,10 @@ export const AdminDashboardPage: React.FC = () => {
               type="button"
               onClick={() => handleDownloadDossier('json')}
               disabled={isExporting}
-              className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-1.5"
+              className="px-3.5 py-1.5 bg-[#0b2545] hover:bg-[#133e7c] text-white rounded-lg text-xs font-semibold shadow-xs transition flex items-center space-x-1.5"
               title="Download consolidated NCVET Audit Dossier JSON with consistency metrics & cryptographic logs"
             >
-              <Download className="w-3.5 h-3.5" />
+              <Download className="w-3.5 h-3.5 text-amber-400" />
               <span>{isExporting ? 'Generating Dossier...' : 'Download NCVET Audit Dossier'}</span>
             </button>
 
@@ -236,7 +236,7 @@ export const AdminDashboardPage: React.FC = () => {
             <button
               type="button"
               onClick={handleViewLedger}
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-medium transition flex items-center space-x-1"
+              className="px-3 py-1.5 bg-[#133e7c] hover:bg-[#1a4f9c] text-white rounded-lg text-xs font-medium transition flex items-center space-x-1"
               title="Inspect recent cryptographic signature logs"
             >
               <ScrollText className="w-3.5 h-3.5 text-amber-300" />
@@ -254,11 +254,11 @@ export const AdminDashboardPage: React.FC = () => {
       </div>
 
       {/* Inter-Assessor Consistency Testing Tool */}
-      <div className="bg-gradient-to-br from-slate-900 to-indigo-950 text-white p-6 sm:p-8 rounded-2xl shadow-xl space-y-5">
+      <div className="bg-[#0b2545] border border-[#133a68] text-white p-6 sm:p-8 rounded-2xl shadow-md space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg bg-indigo-600 flex items-center justify-center">
-              <BarChart3 className="w-6 h-6 text-amber-300" />
+            <div className="w-10 h-10 rounded-lg bg-[#133e7c] border border-[#205493] flex items-center justify-center">
+              <BarChart3 className="w-6 h-6 text-amber-400" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-white">Inter-Assessor Scoring Consistency Test Harness</h2>
@@ -271,7 +271,7 @@ export const AdminDashboardPage: React.FC = () => {
           <button
             onClick={runConsistencyEvaluation}
             disabled={isTestingConsistency}
-            className="px-4 py-2 bg-indigo-500 hover:bg-indigo-400 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-1.5 self-start sm:self-auto"
+            className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold shadow-xs transition flex items-center space-x-1.5 self-start sm:self-auto"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${isTestingConsistency ? 'animate-spin' : ''}`} />
             <span>{isTestingConsistency ? 'Running Benchmark...' : 'Run Consistency Benchmark'}</span>
@@ -299,7 +299,7 @@ export const AdminDashboardPage: React.FC = () => {
 
               <div className="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
                 <span className="text-xs text-slate-400 uppercase font-semibold">Variance Reduction</span>
-                <div className="text-2xl font-bold text-indigo-300 mt-1">
+                <div className="text-2xl font-bold text-amber-400 mt-1">
                   -{consistencyResult.varianceReductionPct}%
                 </div>
                 <div className="text-[11px] text-slate-400">Evaluated on {consistencyResult.numCandidates} test candidates</div>
@@ -325,7 +325,7 @@ export const AdminDashboardPage: React.FC = () => {
 
               <div className="bg-slate-800/60 p-3 rounded-xl border border-slate-700/80">
                 <span className="text-[10px] text-slate-400 uppercase font-semibold block">Missing Evidence</span>
-                <div className="text-base font-bold text-indigo-300 mt-0.5">
+                <div className="text-base font-bold text-cyan-300 mt-0.5">
                   -100% (Zero Gaps)
                 </div>
                 <div className="text-[10px] text-slate-400">Enforced by digital quality gates</div>
@@ -360,7 +360,7 @@ export const AdminDashboardPage: React.FC = () => {
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
           <div className="flex items-center space-x-2">
-            <Database className="w-5 h-5 text-indigo-600" />
+            <Database className="w-5 h-5 text-[#0b2545]" />
             <h2 className="text-base font-bold text-slate-900">Registered National Qualifications Catalog</h2>
           </div>
 
@@ -455,7 +455,7 @@ export const AdminDashboardPage: React.FC = () => {
           <div className="bg-white rounded-2xl max-w-4xl w-full p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <div className="flex items-center space-x-2">
-                <ScrollText className="w-5 h-5 text-indigo-600" />
+                <ScrollText className="w-5 h-5 text-[#0b2545]" />
                 <div>
                   <h3 className="text-base font-bold text-slate-900">
                     NCVET Cryptographic Audit Ledger & Sessions Registry
@@ -478,25 +478,25 @@ export const AdminDashboardPage: React.FC = () => {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
                 <span className="text-[10px] uppercase font-bold text-slate-500">Total Qualifications</span>
-                <div className="text-lg font-extrabold text-indigo-600 mt-0.5">
+                <div className="text-lg font-extrabold text-[#0b2545] mt-0.5">
                   {dossierLedger.executive_summary?.total_qualifications_registered || 1910}
                 </div>
               </div>
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
                 <span className="text-[10px] uppercase font-bold text-slate-500">Sessions Audited</span>
-                <div className="text-lg font-extrabold text-purple-600 mt-0.5">
+                <div className="text-lg font-extrabold text-[#133e7c] mt-0.5">
                   {dossierLedger.executive_summary?.total_assessment_sessions || 0}
                 </div>
               </div>
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
                 <span className="text-[10px] uppercase font-bold text-slate-500">Fleiss' Kappa Consensus</span>
-                <div className="text-lg font-extrabold text-teal-600 mt-0.5">
+                <div className="text-lg font-extrabold text-teal-700 mt-0.5">
                   κ = {dossierLedger.inter_assessor_consistency_benchmark?.fleiss_kappa?.assisted || 0.88}
                 </div>
               </div>
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
                 <span className="text-[10px] uppercase font-bold text-slate-500">Assessor Agreement</span>
-                <div className="text-lg font-extrabold text-emerald-600 mt-0.5">
+                <div className="text-lg font-extrabold text-emerald-700 mt-0.5">
                   {dossierLedger.inter_assessor_consistency_benchmark?.exact_agreement_pct?.assisted || 91.4}%
                 </div>
               </div>
@@ -562,7 +562,7 @@ export const AdminDashboardPage: React.FC = () => {
                 {dossierLedger.tamper_evident_audit_ledger?.map((log: any, idx: number) => (
                   <div key={idx} className="p-2 bg-slate-50 rounded border border-slate-200 flex items-center justify-between">
                     <div>
-                      <span className="font-bold text-indigo-700">{log.action}</span>
+                      <span className="font-bold text-[#0b2545]">{log.action}</span>
                       <span className="text-slate-500 ml-2">by {log.user_name} ({log.user_role})</span>
                     </div>
                     <span className="text-slate-400 text-[10px]">{log.created_at?.slice(0, 19).replace('T', ' ')}</span>
@@ -585,9 +585,9 @@ export const AdminDashboardPage: React.FC = () => {
                     setShowLedgerModal(false);
                     handleDownloadDossier('json');
                   }}
-                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5"
+                  className="px-4 py-2 bg-[#0b2545] hover:bg-[#133e7c] text-white rounded-lg text-xs font-semibold flex items-center space-x-1.5 shadow-xs"
                 >
-                  <Download className="w-3.5 h-3.5" />
+                  <Download className="w-3.5 h-3.5 text-amber-400" />
                   <span>Download Full JSON Dossier</span>
                 </button>
                 <button

@@ -50,7 +50,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
     <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-6 bg-white p-8 rounded-2xl shadow-md border border-slate-200">
         <div className="text-center">
-          <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+          <div className="w-12 h-12 bg-[#0b2545]/10 text-[#0b2545] rounded-xl flex items-center justify-center mx-auto mb-3 border border-slate-200">
             <UserPlus className="w-6 h-6" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900">Create an Account</h2>
@@ -72,7 +72,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                 type="button"
                 onClick={() => setRole('worker')}
                 className={`py-2 text-xs font-semibold rounded-lg border transition ${
-                  role === 'worker' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                  role === 'worker' ? 'bg-[#0b2545] text-white border-[#0b2545]' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                 }`}
               >
                 Worker (Candidate)
@@ -81,7 +81,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                 type="button"
                 onClick={() => setRole('assessor')}
                 className={`py-2 text-xs font-semibold rounded-lg border transition ${
-                  role === 'assessor' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                  role === 'assessor' ? 'bg-[#0b2545] text-white border-[#0b2545]' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                 }`}
               >
                 Assessor
@@ -90,7 +90,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
                 type="button"
                 onClick={() => setRole('admin')}
                 className={`py-2 text-xs font-semibold rounded-lg border transition ${
-                  role === 'admin' ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                  role === 'admin' ? 'bg-[#0b2545] text-white border-[#0b2545]' : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
                 }`}
               >
                 Administrator
@@ -106,7 +106,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               placeholder="e.g. Ramesh Chandra"
-              className="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700"
             />
           </div>
 
@@ -118,7 +118,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="e.g. ramesh@example.com"
-              className="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700"
             />
           </div>
 
@@ -131,7 +131,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Minimum 6 characters"
-              className="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="w-full px-3.5 py-2 border border-slate-300 rounded-lg text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700"
             />
           </div>
 
@@ -173,7 +173,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm transition disabled:opacity-50 mt-4"
+            className="w-full py-2.5 px-4 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-lg shadow-sm transition disabled:opacity-50 mt-4"
           >
             {isLoading ? 'Creating Account...' : 'Complete Registration'}
           </button>
@@ -184,7 +184,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onNavigate }) => {
           <button
             type="button"
             onClick={() => onNavigate('login')}
-            className="text-indigo-600 font-semibold hover:underline"
+            className="text-blue-800 font-semibold hover:underline"
           >
             Sign in
           </button>

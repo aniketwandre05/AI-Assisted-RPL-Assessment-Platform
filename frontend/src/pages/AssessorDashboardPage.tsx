@@ -54,7 +54,7 @@ export const AssessorDashboardPage: React.FC<AssessorDashboardProps> = ({ onNavi
       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center space-x-2">
-            <CheckSquare className="w-6 h-6 text-indigo-600" />
+            <CheckSquare className="w-6 h-6 text-[#0b2545]" />
             <h1 className="text-xl font-bold text-slate-900">Authorized Assessor Evaluation Portal</h1>
           </div>
           <p className="text-xs text-slate-500 mt-1">
@@ -79,7 +79,7 @@ export const AssessorDashboardPage: React.FC<AssessorDashboardProps> = ({ onNavi
             placeholder="Search candidate name or qualification..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3.5 py-1.5 text-sm border border-slate-300 rounded-lg focus:border-indigo-500"
+            className="w-full pl-9 pr-3.5 py-1.5 text-sm border border-slate-300 rounded-lg focus:border-blue-700"
           />
         </div>
 
@@ -175,7 +175,7 @@ export const AssessorDashboardPage: React.FC<AssessorDashboardProps> = ({ onNavi
                     <td className="py-4 px-6 text-right space-x-2">
                       <button
                         onClick={() => onNavigate('assessment-session', sess.id)}
-                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-semibold shadow-sm transition"
+                        className="px-3 py-1.5 bg-[#0b2545] hover:bg-[#133e7c] text-white rounded text-xs font-semibold shadow-xs transition"
                       >
                         {sess.status === 'finalized' ? 'Review Checklist' : 'Score Candidate'}
                       </button>

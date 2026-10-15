@@ -50,7 +50,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
     <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-md border border-slate-200">
         <div className="text-center">
-          <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mx-auto mb-3">
+          <div className="w-12 h-12 bg-[#0b2545]/10 text-[#0b2545] rounded-xl flex items-center justify-center mx-auto mb-3 border border-slate-200">
             <LogIn className="w-6 h-6" />
           </div>
           <h2 className="text-2xl font-bold text-slate-900">Sign in to SAKSHAM</h2>
@@ -101,7 +101,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="e.g. worker@rpl.gov.in"
-              className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
+              className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 transition"
             />
           </div>
 
@@ -113,14 +113,14 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition"
+              className="w-full px-3.5 py-2.5 border border-slate-300 rounded-lg text-sm focus:border-blue-700 focus:ring-1 focus:ring-blue-700 transition"
             />
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg shadow-sm transition disabled:opacity-50"
+            className="w-full py-2.5 px-4 bg-[#0b2545] hover:bg-[#133e7c] text-white font-medium rounded-lg shadow-sm transition disabled:opacity-50"
           >
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
@@ -131,7 +131,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onNavigate }) => {
           <button
             type="button"
             onClick={() => onNavigate('register')}
-            className="text-indigo-600 font-semibold hover:underline"
+            className="text-blue-800 font-semibold hover:underline"
           >
             Register here
           </button>

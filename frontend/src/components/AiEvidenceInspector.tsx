@@ -93,22 +93,22 @@ export const AiEvidenceInspector: React.FC<AiEvidenceInspectorProps> = ({
   const confidencePct = Math.round(analysis.confidence_score * 100);
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-indigo-200 bg-gradient-to-br from-indigo-50/40 via-white to-slate-50 p-4 shadow-sm space-y-3">
+    <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
       {/* Laser Scanning Visual Animation during re-analysis */}
       {isReanalyzing && (
-        <div className="absolute inset-0 bg-indigo-500/10 backdrop-blur-xs flex items-center justify-center z-10">
+        <div className="absolute inset-0 bg-slate-900/10 backdrop-blur-xs flex items-center justify-center z-10">
           <div className="flex items-center space-x-2 bg-slate-900 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold shadow-xl">
-            <RefreshCw className="w-4 h-4 animate-spin text-indigo-400" />
+            <RefreshCw className="w-4 h-4 animate-spin text-amber-400" />
             <span>AI Computer Vision Scanning Artifact...</span>
           </div>
         </div>
       )}
 
       {/* Header Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-100 pb-2.5">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
         <div className="flex items-center space-x-2">
-          <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center shadow-xs">
-            <Cpu className="w-4 h-4 text-amber-300" />
+          <div className="w-7 h-7 rounded-lg bg-[#0b2545] text-white flex items-center justify-center shadow-xs">
+            <Cpu className="w-4 h-4 text-amber-400" />
           </div>
           <div>
             <div className="flex items-center space-x-1.5">
@@ -131,7 +131,7 @@ export const AiEvidenceInspector: React.FC<AiEvidenceInspectorProps> = ({
               onClick={handleReanalyze}
               disabled={isReanalyzing}
               title="Re-run Computer Vision analysis"
-              className="p-1 rounded text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition"
+              className="p-1 rounded text-slate-400 hover:text-[#0b2545] hover:bg-slate-100 transition"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isReanalyzing ? 'animate-spin' : ''}`} />
             </button>
@@ -143,15 +143,15 @@ export const AiEvidenceInspector: React.FC<AiEvidenceInspectorProps> = ({
       <div className="space-y-1">
         <div className="flex items-center justify-between text-xs">
           <span className="text-slate-600 font-medium flex items-center space-x-1">
-            <Eye className="w-3.5 h-3.5 text-indigo-500" />
+            <Eye className="w-3.5 h-3.5 text-[#0b2545]" />
             <span>Computer Vision Confidence:</span>
           </span>
-          <span className="font-bold text-indigo-900">{confidencePct}%</span>
+          <span className="font-bold text-[#0b2545]">{confidencePct}%</span>
         </div>
         <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
           <div 
             className={`h-full transition-all duration-500 rounded-full ${
-              confidencePct >= 90 ? 'bg-emerald-500' : confidencePct >= 75 ? 'bg-indigo-500' : 'bg-amber-500'
+              confidencePct >= 90 ? 'bg-emerald-600' : confidencePct >= 75 ? 'bg-blue-800' : 'bg-amber-600'
             }`}
             style={{ width: `${confidencePct}%` }}
           />
@@ -168,7 +168,7 @@ export const AiEvidenceInspector: React.FC<AiEvidenceInspectorProps> = ({
           {analysis.detected_tags.map((tag, idx) => (
             <span 
               key={idx}
-              className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-white text-slate-800 border border-indigo-200 shadow-2xs"
+              className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-slate-50 text-slate-800 border border-slate-200 shadow-2xs"
             >
               {tag}
             </span>
@@ -177,7 +177,7 @@ export const AiEvidenceInspector: React.FC<AiEvidenceInspectorProps> = ({
       </div>
 
       {/* Co-Pilot Summary */}
-      <div className="p-2.5 bg-white/80 rounded-lg border border-indigo-100 text-xs text-slate-700 leading-relaxed">
+      <div className="p-2.5 bg-slate-50 rounded-lg border border-slate-200 text-xs text-slate-700 leading-relaxed">
         <span className="font-semibold text-slate-900 mr-1">Assessor Co-Pilot Summary:</span>
         {analysis.summary}
       </div>
@@ -186,7 +186,7 @@ export const AiEvidenceInspector: React.FC<AiEvidenceInspectorProps> = ({
       {!readOnly && onApplyRubric && (
         <div className="pt-1 flex items-center justify-between">
           <span className="text-[11px] text-slate-500">
-            Suggested Rubric: <strong className="text-indigo-900">Level {analysis.suggested_rubric_level}</strong>
+            Suggested Rubric: <strong className="text-[#0b2545]">Level {analysis.suggested_rubric_level}</strong>
           </span>
 
           <button
@@ -196,7 +196,7 @@ export const AiEvidenceInspector: React.FC<AiEvidenceInspectorProps> = ({
             className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition shadow-xs ${
               rubricApplied
                 ? 'bg-emerald-600 text-white'
-                : 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                : 'bg-[#0b2545] hover:bg-[#133e7c] text-white'
             }`}
           >
             {rubricApplied ? (
