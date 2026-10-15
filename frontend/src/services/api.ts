@@ -1,6 +1,15 @@
 import { User, WorkerProfile, Qualification, MatchingResult, AssessmentSession, CompetencyReport, AssessmentEvidence, AiEvidenceAnalysis } from '../types';
 
-const API_BASE = '/api/v1';
+function getApiBase(): string {
+  if (typeof window !== 'undefined') {
+    // If not running directly on Flask port 5000 (e.g. Vite dev on 5173, preview on 4173, etc.):
+    if (window.location.port && window.location.port !== '5000') {
+      const hostname = window.location.hostname === 'localhost' ? '127.0.0.1' : (window.location.hostname || '127.0.0.1');
+      return `http://${hostname}:5000/api/v1`;
+    }
+  }
+  return '/api/v1';
+}
 
 function getHeaders(): HeadersInit {
   const token = localStorage.getItem('rpl_token');
@@ -14,14 +23,55 @@ function getHeaders(): HeadersInit {
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const url = `${API_BASE}${path}`;
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      ...getHeaders(),
-      ...(options.headers || {}),
-    },
-  });
+  const apiBase = getApiBase();
+  const url = `${apiBase}${path}`;
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      ...options,
+      headers: {
+        ...getHeaders(),
+        ...(options.headers || {}),
+      },
+    });
+  } catch (netErr) {
+    // If direct backend request failed, try relative /api/v1 fallback
+    if (apiBase !== '/api/v1') {
+      try {
+        response = await fetch(`/api/v1${path}`, {
+          ...options,
+          headers: {
+            ...getHeaders(),
+            ...(options.headers || {}),
+          },
+        });
+      } catch {
+        throw netErr;
+      }
+    } else {
+      throw netErr;
+    }
+  }
+
+  // If dev server returned 404 for a relative proxy call, retry against direct backend port 5000
+  if (response.status === 404 && apiBase === '/api/v1' && typeof window !== 'undefined' && window.location.port !== '5000') {
+    try {
+      const fallbackUrl = `http://127.0.0.1:5000/api/v1${path}`;
+      const fallbackResp = await fetch(fallbackUrl, {
+        ...options,
+        headers: {
+          ...getHeaders(),
+          ...(options.headers || {}),
+        },
+      });
+      if (fallbackResp.ok) {
+        return (await fallbackResp.json()) as T;
+      }
+    } catch {
+      // Ignore fallback failure and continue with original response handling
+    }
+  }
 
   const data = await response.json().catch(() => ({}));
 
