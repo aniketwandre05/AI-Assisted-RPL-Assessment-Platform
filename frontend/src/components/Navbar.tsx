@@ -95,7 +95,12 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
         <div className="flex items-center justify-between h-16">
           {/* Logo & Platform Name */}
           <div 
-            onClick={() => onNavigate('landing')}
+            onClick={() => {
+              if (!isAuthenticated) onNavigate('landing');
+              else if (user?.role === 'worker') onNavigate('worker-dashboard');
+              else if (user?.role === 'assessor') onNavigate('assessor-dashboard');
+              else onNavigate('admin-dashboard');
+            }}
             className="flex items-center space-x-3 cursor-pointer group"
           >
             <div className="w-10 h-10 rounded-lg bg-[#133e7c] border border-[#205493] flex items-center justify-center font-bold text-white shadow-inner group-hover:bg-[#1a4f9c] transition">
@@ -109,14 +114,16 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
 
           {/* Navigation Items based on Role */}
           <nav className="hidden md:flex items-center space-x-1">
-            <button
-              onClick={() => onNavigate('landing')}
-              className={`px-3 py-2 rounded-md text-sm font-medium transition ${
-                currentView === 'landing' ? 'bg-[#133e7c] text-white shadow-xs' : 'text-slate-200 hover:bg-[#133e7c]/60 hover:text-white'
-              }`}
-            >
-              {t('nav.home')}
-            </button>
+            {!isAuthenticated && (
+              <button
+                onClick={() => onNavigate('landing')}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition ${
+                  currentView === 'landing' ? 'bg-[#133e7c] text-white shadow-xs' : 'text-slate-200 hover:bg-[#133e7c]/60 hover:text-white'
+                }`}
+              >
+                {t('nav.home')}
+              </button>
+            )}
 
             {isAuthenticated && user?.role === 'worker' && (
               <>

@@ -31,19 +31,26 @@ const AppContent: React.FC = () => {
   const [currentView, setCurrentView] = useState<string>(initial.view);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(initial.id);
 
-  // Automatically redirect to homepage when logged out from a protected view
+  // Automatically redirect to homepage when logged out, or to role dashboard when logged in
   useEffect(() => {
     if (!isAuthenticated && !['landing', 'login', 'register', 'verify'].includes(currentView)) {
       setCurrentView('landing');
       setCurrentSessionId(null);
+    } else if (isAuthenticated && currentView === 'landing' && user) {
+      const roleHome = user.role === 'worker' ? 'worker-dashboard' : user.role === 'assessor' ? 'assessor-dashboard' : 'admin-dashboard';
+      setCurrentView(roleHome);
     }
-  }, [isAuthenticated, currentView]);
+  }, [isAuthenticated, user, currentView]);
 
   const handleNavigate = (view: string, id?: string) => {
+    let targetView = view;
+    if (isAuthenticated && view === 'landing') {
+      targetView = user?.role === 'worker' ? 'worker-dashboard' : user?.role === 'assessor' ? 'assessor-dashboard' : 'admin-dashboard';
+    }
     if (id !== undefined) {
       setCurrentSessionId(id);
     }
-    setCurrentView(view);
+    setCurrentView(targetView);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 

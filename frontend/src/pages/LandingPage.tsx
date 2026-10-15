@@ -105,73 +105,75 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
             )}
           </div>
 
-          {/* 1-Click Evaluation Demo Logins */}
-          <div className="mt-10 pt-6 border-t border-[#133a68] max-w-2xl mx-auto">
-            <span className="text-xs uppercase tracking-wider text-slate-300 font-bold block mb-3">
-              {t('landing.quickPersonas')}
-            </span>
+          {/* 1-Click Evaluation Demo Logins (Only shown when not logged in) */}
+          {!isAuthenticated && (
+            <div className="mt-10 pt-6 border-t border-[#133a68] max-w-2xl mx-auto">
+              <span className="text-xs uppercase tracking-wider text-slate-300 font-bold block mb-3">
+                {t('landing.quickPersonas')}
+              </span>
 
-            {quickLoginError && (
-              <div className="mb-3 p-2.5 bg-red-900/60 border border-red-500/80 rounded-lg text-xs text-red-200 flex items-center justify-center space-x-2 animate-fadeIn">
-                <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
-                <span>{quickLoginError}</span>
+              {quickLoginError && (
+                <div className="mb-3 p-2.5 bg-red-900/60 border border-red-500/80 rounded-lg text-xs text-red-200 flex items-center justify-center space-x-2 animate-fadeIn">
+                  <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                  <span>{quickLoginError}</span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                <button
+                  onClick={() => handleQuickLogin('worker')}
+                  disabled={quickLoginRole !== null}
+                  className="py-2.5 px-3 bg-[#07192f] hover:bg-[#133e7c] disabled:opacity-60 text-slate-200 rounded border border-[#1a4373] transition flex items-center justify-center space-x-1.5 font-medium cursor-pointer"
+                >
+                  {quickLoginRole === 'worker' ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 text-blue-400 animate-spin" />
+                      <span>Signing in...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Users className="w-3.5 h-3.5 text-blue-400" />
+                      <span>{t('landing.workerRajesh')}</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => handleQuickLogin('assessor')}
+                  disabled={quickLoginRole !== null}
+                  className="py-2.5 px-3 bg-[#07192f] hover:bg-[#133e7c] disabled:opacity-60 text-slate-200 rounded border border-[#1a4373] transition flex items-center justify-center space-x-1.5 font-medium cursor-pointer"
+                >
+                  {quickLoginRole === 'assessor' ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 text-emerald-400 animate-spin" />
+                      <span>Signing in...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FileCheck className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>{t('landing.assessorAnanya')}</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => handleQuickLogin('admin')}
+                  disabled={quickLoginRole !== null}
+                  className="py-2.5 px-3 bg-[#07192f] hover:bg-[#133e7c] disabled:opacity-60 text-slate-200 rounded border border-[#1a4373] transition flex items-center justify-center space-x-1.5 font-medium cursor-pointer"
+                >
+                  {quickLoginRole === 'admin' ? (
+                    <>
+                      <RefreshCw className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+                      <span>Signing in...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Shield className="w-3.5 h-3.5 text-amber-400" />
+                      <span>{t('landing.administrator')}</span>
+                    </>
+                  )}
+                </button>
               </div>
-            )}
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-              <button
-                onClick={() => handleQuickLogin('worker')}
-                disabled={quickLoginRole !== null}
-                className="py-2.5 px-3 bg-[#07192f] hover:bg-[#133e7c] disabled:opacity-60 text-slate-200 rounded border border-[#1a4373] transition flex items-center justify-center space-x-1.5 font-medium cursor-pointer"
-              >
-                {quickLoginRole === 'worker' ? (
-                  <>
-                    <RefreshCw className="w-3.5 h-3.5 text-blue-400 animate-spin" />
-                    <span>Signing in...</span>
-                  </>
-                ) : (
-                  <>
-                    <Users className="w-3.5 h-3.5 text-blue-400" />
-                    <span>{t('landing.workerRajesh')}</span>
-                  </>
-                )}
-              </button>
-              <button
-                onClick={() => handleQuickLogin('assessor')}
-                disabled={quickLoginRole !== null}
-                className="py-2.5 px-3 bg-[#07192f] hover:bg-[#133e7c] disabled:opacity-60 text-slate-200 rounded border border-[#1a4373] transition flex items-center justify-center space-x-1.5 font-medium cursor-pointer"
-              >
-                {quickLoginRole === 'assessor' ? (
-                  <>
-                    <RefreshCw className="w-3.5 h-3.5 text-emerald-400 animate-spin" />
-                    <span>Signing in...</span>
-                  </>
-                ) : (
-                  <>
-                    <FileCheck className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>{t('landing.assessorAnanya')}</span>
-                  </>
-                )}
-              </button>
-              <button
-                onClick={() => handleQuickLogin('admin')}
-                disabled={quickLoginRole !== null}
-                className="py-2.5 px-3 bg-[#07192f] hover:bg-[#133e7c] disabled:opacity-60 text-slate-200 rounded border border-[#1a4373] transition flex items-center justify-center space-x-1.5 font-medium cursor-pointer"
-              >
-                {quickLoginRole === 'admin' ? (
-                  <>
-                    <RefreshCw className="w-3.5 h-3.5 text-amber-400 animate-spin" />
-                    <span>Signing in...</span>
-                  </>
-                ) : (
-                  <>
-                    <Shield className="w-3.5 h-3.5 text-amber-400" />
-                    <span>{t('landing.administrator')}</span>
-                  </>
-                )}
-              </button>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
