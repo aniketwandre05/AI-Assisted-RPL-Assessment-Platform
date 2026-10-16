@@ -2,8 +2,8 @@ import { User, WorkerProfile, Qualification, MatchingResult, AssessmentSession, 
 
 function getApiBase(): string {
   if (typeof window !== 'undefined') {
-    // If not running directly on Flask port 5000 (e.g. Vite dev on 5173, preview on 4173, etc.):
-    if (window.location.port && window.location.port !== '5000') {
+    // If opened via file:// or dev server (port not 5000)
+    if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '5000')) {
       const hostname = window.location.hostname === 'localhost' ? '127.0.0.1' : (window.location.hostname || '127.0.0.1');
       return `http://${hostname}:5000/api/v1`;
     }
@@ -47,10 +47,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
           },
         });
       } catch {
-        throw netErr;
+        throw new Error('SAKSHAM backend server is offline (port 5000). Please start the backend with: python run.py');
       }
     } else {
-      throw netErr;
+      throw new Error('SAKSHAM backend server is offline (port 5000). Please start the backend with: python run.py');
     }
   }
 
@@ -76,6 +76,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
+    if (response.status === 404 || response.status === 502 || response.status === 503 || response.status === 504) {
+      throw new Error(data.error || 'SAKSHAM backend server is offline (port 5000). Please start the backend with: python run.py');
+    }
     throw new Error(data.error || `Request failed with status ${response.status}`);
   }
 

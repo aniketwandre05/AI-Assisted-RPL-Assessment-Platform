@@ -67,7 +67,7 @@ def create_app(config_class=Config):
     @app.errorhandler(404)
     def not_found(e):
         if request.path.startswith("/api/"):
-            return jsonify({"error": "Resource not found"}), 404
+            return jsonify({"error": f"API endpoint not found: {request.path}"}), 404
         if frontend_dist.exists():
             return send_from_directory(str(frontend_dist), "index.html")
         return jsonify({"error": "Resource not found"}), 404

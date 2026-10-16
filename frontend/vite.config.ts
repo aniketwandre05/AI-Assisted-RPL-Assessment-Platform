@@ -16,6 +16,17 @@ export default defineConfig({
         target: 'http://127.0.0.1:5000',
         changeOrigin: true,
         secure: false,
+        configure: (proxy) => {
+          proxy.on('error', (err, _req, res) => {
+            console.warn('[Vite Proxy] Backend connection failed:', err.message);
+            if (res && 'writeHead' in res && !res.headersSent) {
+              res.writeHead(503, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ 
+                error: 'SAKSHAM backend server is offline (port 5000). Please start the backend with: python run.py' 
+              }));
+            }
+          });
+        }
       }
     }
   },
@@ -27,6 +38,17 @@ export default defineConfig({
         target: 'http://127.0.0.1:5000',
         changeOrigin: true,
         secure: false,
+        configure: (proxy) => {
+          proxy.on('error', (err, _req, res) => {
+            console.warn('[Vite Proxy] Backend connection failed:', err.message);
+            if (res && 'writeHead' in res && !res.headersSent) {
+              res.writeHead(503, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ 
+                error: 'SAKSHAM backend server is offline (port 5000). Please start the backend with: python run.py' 
+              }));
+            }
+          });
+        }
       }
     }
   }
