@@ -108,10 +108,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onNavigate }) => {
           {/* 1-Click Evaluation Demo Logins (Only shown when not logged in) */}
           {!isAuthenticated && (
             <div className="mt-10 pt-6 border-t border-[#133a68] max-w-2xl mx-auto">
-              <span className="text-xs uppercase tracking-wider text-slate-300 font-bold block mb-3">
-                {t('landing.quickPersonas')}
-              </span>
-
               {quickLoginError && (
                 <div className="mb-3 p-2.5 bg-red-900/60 border border-red-500/80 rounded-lg text-xs text-red-200 flex items-center justify-center space-x-2 animate-fadeIn">
                   <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />

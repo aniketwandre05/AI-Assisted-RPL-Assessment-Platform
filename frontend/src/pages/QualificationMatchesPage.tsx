@@ -29,8 +29,15 @@ export const QualificationMatchesPage: React.FC<QualificationMatchesProps> = ({ 
   const fetchMatches = async () => {
     setIsLoading(true);
     setError(null);
+    const startTime = Date.now();
     try {
       const res = await api.worker.triggerMatching(15.0);
+      // Professional demo pacing: 1.2 seconds so analyzing screen is visible, crisp, and fast
+      const elapsed = Date.now() - startTime;
+      const targetDelay = 1200;
+      if (elapsed < targetDelay) {
+        await new Promise((resolve) => setTimeout(resolve, targetDelay - elapsed));
+      }
       setMatchingResult(res);
     } catch (err: any) {
       setError(err.message || 'Failed to match qualifications.');

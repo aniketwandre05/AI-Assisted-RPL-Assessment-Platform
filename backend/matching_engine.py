@@ -115,14 +115,17 @@ class MatchingEngine:
     @staticmethod
     def evaluate_candidate_eligibility(
         profile: WorkerProfile,
-        qual: Qualification
+        qual: Any
     ) -> Dict[str, Any]:
         """
         Evaluates candidate eligibility against official NSQF / NCVET Recognition of Prior Learning
         Entry Requirements Matrix.
         RPL principle: Relevant informal work experience compensates for lack of formal educational qualifications.
         """
-        level = qual.nsqf_level or 4.0
+        if isinstance(qual, dict):
+            level = qual.get("nsqf_level") or 4.0
+        else:
+            level = getattr(qual, "nsqf_level", 4.0) or 4.0
         exp = profile.experience_years or 0.0
         edu = (profile.education_level or "").lower()
 
@@ -163,6 +166,76 @@ class MatchingEngine:
             "ncvet_rule_reference": f"NCVET RPL Guidelines Entry Criteria for NSQF Level {level}"
         }
 
+    _cached_index: Optional[Dict[str, Any]] = None
+
+    @classmethod
+    def invalidate_cache(cls):
+        cls._cached_index = None
+
+    @classmethod
+    def _get_or_build_index(cls):
+        from sqlalchemy.orm import selectinload
+        from backend.models.qualification import NationalOccupationalStandard
+        
+        current_count = Qualification.query.count()
+        first_row = db.session.query(Qualification.id).first()
+        current_sig = (current_count, first_row[0] if first_row else None)
+        if cls._cached_index is not None and cls._cached_index.get("sig") == current_sig:
+            return cls._cached_index
+
+        qualifications = Qualification.query.options(
+            selectinload(Qualification.occupational_standards).selectinload(NationalOccupationalStandard.performance_criteria),
+            selectinload(Qualification.tools_and_equipment)
+        ).all()
+
+        qual_metadata = []
+        qual_texts = []
+        for q in qualifications:
+            q_text_parts = [q.title, q.trade, q.sector, q.description or ""]
+            criteria_items = []
+            for nos in q.occupational_standards:
+                q_text_parts.append(nos.title)
+                for pc in nos.performance_criteria:
+                    q_text_parts.append(pc.criterion_text)
+                    criteria_items.append({
+                        "criterion_code": pc.criterion_code,
+                        "nos_code": nos.nos_code,
+                        "criterion_text": pc.criterion_text,
+                    })
+            tools_items = []
+            for t in q.tools_and_equipment:
+                q_text_parts.append(t.tool_name)
+                tools_items.append(t.tool_name)
+
+            doc_str = " ".join(q_text_parts)
+            qual_texts.append(doc_str)
+            title_words = set(re.findall(r'[a-zA-Z0-9]+', f"{q.title} {q.trade}".lower())) - cls.STOPWORDS
+            
+            qual_metadata.append({
+                "id": q.id,
+                "title": q.title,
+                "nqr_code": q.nqr_code,
+                "sector": q.sector,
+                "trade": q.trade,
+                "nsqf_level": q.nsqf_level,
+                "is_synthetic": q.is_synthetic,
+                "corpus_lower": doc_str.lower(),
+                "title_words": title_words,
+                "criteria_items": criteria_items,
+                "tools_items": tools_items,
+            })
+
+        vec = TfidfVectorizer(stop_words="english", ngram_range=(1, 2), sublinear_tf=True)
+        tfidf_mat = vec.fit_transform(qual_texts) if qual_texts else None
+
+        cls._cached_index = {
+            "sig": current_sig,
+            "metadata": qual_metadata,
+            "vectorizer": vec,
+            "tfidf_matrix": tfidf_mat,
+        }
+        return cls._cached_index
+
     @classmethod
     def match_worker_profile(
         cls,
@@ -170,8 +243,12 @@ class MatchingEngine:
         top_k: int = 5,
         min_threshold: float = MATCH_THRESHOLD_MIN
     ) -> Dict[str, Any]:
-        qualifications = Qualification.query.all()
-        if not qualifications:
+        index = cls._get_or_build_index()
+        qual_metadata = index["metadata"]
+        vec = index["vectorizer"]
+        tfidf_mat = index["tfidf_matrix"]
+
+        if not qual_metadata:
             return {
                 "is_match_found": False,
                 "matches": [],
@@ -205,42 +282,20 @@ class MatchingEngine:
             if mapped != s:
                 worker_skills_lower.extend(mapped.lower().split())
 
-        # TF-IDF corpus
-        corpus = [normalized_worker_text]
-        qual_texts = []
-        for q in qualifications:
-            q_text_parts = [
-                q.title,
-                q.trade,
-                q.sector,
-                q.description or ""
-            ]
-            for nos in q.occupational_standards:
-                q_text_parts.append(nos.title)
-                for pc in nos.performance_criteria:
-                    q_text_parts.append(pc.criterion_text)
-            for t in q.tools_and_equipment:
-                q_text_parts.append(t.tool_name)
-            
-            doc_str = " ".join(q_text_parts)
-            qual_texts.append(doc_str)
-            corpus.append(doc_str)
-
         try:
-            vec = TfidfVectorizer(stop_words="english", ngram_range=(1, 2), sublinear_tf=True)
-            mat = vec.fit_transform(corpus)
-            cos_scores = cosine_similarity(mat[0:1], mat[1:]).flatten()
+            worker_vec = vec.transform([normalized_worker_text])
+            cos_scores = cosine_similarity(worker_vec, tfidf_mat).flatten()
         except Exception:
-            cos_scores = np.zeros(len(qualifications))
+            cos_scores = np.zeros(len(qual_metadata))
 
         # Clear existing suggestions
         QualificationMatch.query.filter_by(worker_profile_id=profile.id).delete()
 
         evaluated_matches = []
 
-        for idx, qual in enumerate(qualifications):
-            q_corpus_lower = qual_texts[idx].lower()
-            q_title_words = set(re.findall(r'[a-zA-Z0-9]+', f"{qual.title} {qual.trade}".lower())) - cls.STOPWORDS
+        for idx, item in enumerate(qual_metadata):
+            q_corpus_lower = item["corpus_lower"]
+            q_title_words = item["title_words"]
 
             # 1. Title/Trade Overlap Score
             title_overlap = len(w_title_words & q_title_words)
@@ -263,27 +318,26 @@ class MatchingEngine:
             if final_score < min_threshold:
                 continue
 
-            # Identify specific matched criteria
+            # Identify specific matched criteria from cached items
             matched_criteria_citations = []
-            for nos in qual.occupational_standards:
-                for pc in nos.performance_criteria:
-                    pc_lower = pc.criterion_text.lower()
-                    overlap = [w for w in (skills + tools + list(w_title_words)) if w.lower() in pc_lower]
-                    if overlap:
-                        matched_criteria_citations.append({
-                            "criterion_code": pc.criterion_code,
-                            "nos_code": nos.nos_code,
-                            "criterion_text": pc.criterion_text,
-                            "matching_terms": overlap[:3]
-                        })
+            for crit in item["criteria_items"]:
+                pc_lower = crit["criterion_text"].lower()
+                overlap = [w for w in (skills + tools + list(w_title_words)) if w.lower() in pc_lower]
+                if overlap:
+                    matched_criteria_citations.append({
+                        "criterion_code": crit["criterion_code"],
+                        "nos_code": crit["nos_code"],
+                        "criterion_text": crit["criterion_text"],
+                        "matching_terms": overlap[:3]
+                    })
 
-            # Identify matched tools
+            # Identify matched tools from cached items
             matched_tools_list = []
-            for t in qual.tools_and_equipment:
-                t_lower = t.tool_name.lower()
+            for tool_name in item["tools_items"]:
+                t_lower = tool_name.lower()
                 tool_overlap = [w for w in tools if w.lower() in t_lower or t_lower in w.lower()]
                 if tool_overlap:
-                    matched_tools_list.append(t.tool_name)
+                    matched_tools_list.append(tool_name)
 
             if final_score >= cls.MATCH_THRESHOLD_HIGH:
                 confidence = "HIGH"
@@ -292,7 +346,7 @@ class MatchingEngine:
             else:
                 confidence = "LOW"
 
-            eligibility = cls.evaluate_candidate_eligibility(profile, qual)
+            eligibility = cls.evaluate_candidate_eligibility(profile, item)
 
             rationale = {
                 "confidence": confidence,
@@ -303,7 +357,7 @@ class MatchingEngine:
                 "eligibility": eligibility,
                 "reason_summary": (
                     f"Identified {final_score}% alignment between declared role '{profile.occupation_title}' "
-                    f"and official NSQF Level {qual.nsqf_level} standard '{qual.title}' "
+                    f"and official NSQF Level {item['nsqf_level']} standard '{item['title']}' "
                     f"({len(matched_criteria_citations)} performance criteria cited). "
                     f"Eligibility Status: {eligibility['eligibility_status']}."
                 )
@@ -311,7 +365,7 @@ class MatchingEngine:
 
             match_record = QualificationMatch(
                 worker_profile_id=profile.id,
-                qualification_id=qual.id,
+                qualification_id=item["id"],
                 match_score=final_score,
                 match_rationale=json.dumps(rationale),
                 status="suggested"
@@ -319,13 +373,13 @@ class MatchingEngine:
             db.session.add(match_record)
 
             evaluated_matches.append({
-                "qualification_id": qual.id,
-                "title": qual.title,
-                "nqr_code": qual.nqr_code,
-                "sector": qual.sector,
-                "trade": qual.trade,
-                "nsqf_level": qual.nsqf_level,
-                "is_synthetic": qual.is_synthetic,
+                "qualification_id": item["id"],
+                "title": item["title"],
+                "nqr_code": item["nqr_code"],
+                "sector": item["sector"],
+                "trade": item["trade"],
+                "nsqf_level": item["nsqf_level"],
+                "is_synthetic": item["is_synthetic"],
                 "match_score": final_score,
                 "confidence": confidence,
                 "eligibility": eligibility,

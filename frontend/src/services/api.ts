@@ -1,11 +1,19 @@
 import { User, WorkerProfile, Qualification, MatchingResult, AssessmentSession, CompetencyReport, AssessmentEvidence, AiEvidenceAnalysis } from '../types';
 
 function getApiBase(): string {
+  const envUrl = (import.meta as any).env?.VITE_API_URL;
+  if (envUrl) {
+    return envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl;
+  }
+
   if (typeof window !== 'undefined') {
-    // If opened via file:// or dev server (port not 5000)
-    if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '5000')) {
-      const hostname = window.location.hostname === 'localhost' ? '127.0.0.1' : (window.location.hostname || '127.0.0.1');
-      return `http://${hostname}:5000/api/v1`;
+    // If opened via local file protocol
+    if (window.location.protocol === 'file:') {
+      return 'http://127.0.0.1:5000/api/v1';
+    }
+    // In local dev (Vite port 5173), Vite proxies /api to 127.0.0.1:5000
+    if (window.location.port === '5173') {
+      return '/api/v1';
     }
   }
   return '/api/v1';
@@ -36,10 +44,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       },
     });
   } catch (netErr) {
-    // If direct backend request failed, try relative /api/v1 fallback
-    if (apiBase !== '/api/v1') {
+    // If relative request failed in local dev, try direct 127.0.0.1:5000 fallback
+    if (apiBase === '/api/v1' && typeof window !== 'undefined' && window.location.hostname === 'localhost') {
       try {
-        response = await fetch(`/api/v1${path}`, {
+        response = await fetch(`http://127.0.0.1:5000/api/v1${path}`, {
           ...options,
           headers: {
             ...getHeaders(),
@@ -50,7 +58,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
         throw new Error('SAKSHAM backend server is offline (port 5000). Please start the backend with: python run.py');
       }
     } else {
-      throw new Error('SAKSHAM backend server is offline (port 5000). Please start the backend with: python run.py');
+      throw new Error('SAKSHAM backend server is offline or unreachable. Please verify the backend service is running.');
     }
   }
 

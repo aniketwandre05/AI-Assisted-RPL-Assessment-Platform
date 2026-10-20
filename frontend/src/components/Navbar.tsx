@@ -154,7 +154,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentView, onNavigate }) => {
               </>
             )}
 
-            {isAuthenticated && (user?.role === 'assessor' || user?.role === 'admin') && (
+            {isAuthenticated && user?.role === 'assessor' && (
               <button
                 onClick={() => onNavigate('assessor-dashboard')}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition ${
