@@ -1,9 +1,13 @@
 import { User, WorkerProfile, Qualification, MatchingResult, AssessmentSession, CompetencyReport, AssessmentEvidence, AiEvidenceAnalysis } from '../types';
 
 function getApiBase(): string {
-  const envUrl = (import.meta as any).env?.VITE_API_URL;
+  let envUrl = (import.meta as any).env?.VITE_API_URL || (import.meta as any).env?.VITE_BACKEND_URL;
   if (envUrl) {
-    return envUrl.endsWith('/') ? envUrl.slice(0, -1) : envUrl;
+    envUrl = envUrl.trim().replace(/\/+$/, '');
+    if (!envUrl.endsWith('/api/v1')) {
+      envUrl = `${envUrl}/api/v1`;
+    }
+    return envUrl;
   }
 
   if (typeof window !== 'undefined') {
